@@ -1,0 +1,35 @@
+.lesCommentaires {
+    display: none;
+    width: 95%;
+    margin: auto;
+    max-height: 500px;
+    overflow-y: scroll;
+}
+
+.poste-container {
+    margin-bottom: 10vh;
+}
+
+.card-footer-item {
+    border: none;
+    background: unset;
+    cursor: pointer;
+}
+
+.card-footer-item:hover {
+    background: #ededed;
+}
+
+.interaction {
+    margin: 0 10vh;
+}
+
+.toggleCom {
+    display: block !important;
+}
+
+.commentaire {
+    display: none;
+    width: 95%;
+    margin: auto;
+}

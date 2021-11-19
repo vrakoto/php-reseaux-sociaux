@@ -19,7 +19,7 @@ $action = $_REQUEST['action'];
 
 switch ($action) {
     case 'accueil':
-        //$publications = $pdo->getLesPublications();
+        $publications = $pdo->getLesPostes();
         require_once 'public' . DIRECTORY_SEPARATOR . 'accueil.php';
     break;
 

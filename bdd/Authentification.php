@@ -58,8 +58,118 @@ class Authentification {
     }
 
 
-    function getLesPublications(): array
+    function getLesPostes(): array
     {
-        
+        $req = "SELECT p.id, auteur, message, datePublication,
+                avatar, nom, prenom
+                FROM poste p JOIN utilisateur u on p.auteur = u.id
+                ORDER BY datePublication DESC";
+        $p = $this->pdo->query($req);
+
+        $publications = $p->fetchAll();
+        return $publications;
+    }
+
+    function publierPoste(string $id, string $message): PDOStatement
+    {
+        $req = "INSERT INTO poste (id, auteur, message) VALUES (:id, :auteur, :message)";
+
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'id' => $id,
+            'auteur' => $_SESSION['id'],
+            'message' => $message
+        ]);
+        return $p;
+    }
+
+    function publierCommentaire(string $idPoste, string $message): PDOStatement
+    {
+        $req = "INSERT INTO commentaire (idPoste, auteur, message) VALUES (:idPoste, :auteur, :message)";
+
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'idPoste' => $idPoste,
+            'auteur' => $_SESSION['id'],
+            'message' => $message
+        ]);
+        return $p;
+    }
+
+    function getLesCommentaires(string $idPoste): array
+    {
+        $req = "SELECT idPoste, auteur, message, datePublication, avatar, nom, prenom
+                FROM commentaire c JOIN utilisateur u on c.auteur = u.id
+                WHERE idPoste = :idPoste
+                ORDER BY datePublication DESC";
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'idPoste' => $idPoste
+        ]);
+
+        $publications = $p->fetchAll();
+        return $publications;
+    }
+
+    function getLesJaimes(string $idPoste): array
+    {
+        $req = "SELECT idPoste, auteur, avatar, nom, prenom
+                FROM poste_aimer pa JOIN utilisateur u on pa.auteur = u.id
+                WHERE idPoste = :idPoste";
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'idPoste' => $idPoste
+        ]);
+
+        $likes = $p->fetchAll();
+        return $likes;
+    }
+
+    function aimerPoste(string $idPoste): PDOStatement
+    {
+        $req = "INSERT INTO poste_aimer (idPoste, auteur) VALUES (:idPoste, :auteur)";
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'idPoste' => $idPoste,
+            'auteur' => $_SESSION['id']
+        ]);
+
+        return $p;
+    }
+
+    function aAimer(string $idPoste): bool
+    {
+        $req = "SELECT auteur FROM poste_aimer WHERE idPoste = :idPoste AND auteur = :auteur";
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'idPoste' => $idPoste,
+            'auteur' => $_SESSION['id']
+        ]);
+
+        return !empty($p->fetch());
+    }
+
+    function retirerJaime(string $idPoste): PDOStatement
+    {
+        $req = "DELETE FROM poste_aimer WHERE idPoste = :idPoste AND auteur = :auteur";
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'idPoste' => $idPoste,
+            'auteur' => $_SESSION['id']
+        ]);
+
+        return $p;
+    }
+
+    function supprimerPoste(string $idPoste): PDOStatement
+    {
+        $req = "DELETE FROM poste WHERE id = :idPoste AND auteur = :auteur";
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'idPoste' => $idPoste,
+            'auteur' => $_SESSION['id']
+        ]);
+
+        return $p;
     }
 }

@@ -4,6 +4,13 @@ session_start();
 $root = dirname(__DIR__) . DIRECTORY_SEPARATOR;
 require_once $root . 'bdd' . DIRECTORY_SEPARATOR . 'Authentification.php';
 $pdo = new Authentification;
+require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'functions' . DIRECTORY_SEPARATOR . 'helper.php';
+
+$connecte = FALSE;
+if ($pdo->connecte()) {
+    $sid = $_SESSION['id'];
+    $connecte = $pdo->connecte();
+}
 
 $action = $_REQUEST['action'];
 switch ($action) {
@@ -20,6 +27,10 @@ switch ($action) {
 
         if ($pdo->verifierIdentifiant($id)) {
             $erreurs['id'] = 'Identifiant déjà prit';
+        }
+
+        if (strlen($id) < 2) {
+            $erreurs['id'] = 'Identifiant trop court';
         }
 
         if (strlen($nom) < 2) {
@@ -44,7 +55,7 @@ switch ($action) {
         }
 
         if (strlen($ville) < 2) {
-            $erreurs['id'] = 'Ville trop courte';
+            $erreurs['ville'] = 'Ville trop courte';
         }
 
         if (!empty($erreurs)) {
@@ -68,5 +79,62 @@ switch ($action) {
         unset($_SESSION['id']);
         header('Location:../index.php?action=accueil');
         exit();
+    break;
+
+    case 'getLesPostes':
+        $publications = $pdo->getLesPostes();
+        require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'poste.php';
+    break;
+
+    case 'publierPoste':
+        $id = substr(str_shuffle(MD5(microtime())), 0, 20);
+        $message = htmlentities($_POST['posteMessage']);
+
+        if (empty(trim($message))) {
+            die(header("HTTP/1.0 404 Poste vide"));
+        }
+        $pdo->publierPoste($id, $message);
+    break;
+
+    case 'publierCommentaire':
+        $idPoste = htmlentities($_POST['idPoste']);
+        $message = htmlentities($_POST['commentaire']);
+
+        if (empty(trim($message))) {
+            die(header("HTTP/1.0 404 Le commentaire est vide"));
+        }
+
+        if (mb_strlen($message) > 250) {
+            die(header("HTTP/1.0 404 Commentaire trop long (pas plus de 250 caracteres)"));
+        }
+
+        $pdo->publierCommentaire($idPoste, $message);
+    break;
+
+    case 'afficherLesCommentaires':
+        $idPoste = htmlentities($_GET['idPoste']);
+        $lesCommentaires = $pdo->getLesCommentaires($idPoste);
+        require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'lesCommentaires.php';
+    break;
+
+    case 'afficherLesJaimes':
+        $idPoste = htmlentities($_GET['idPoste']);
+        $lesJaimes = $pdo->getLesJaimes($idPoste);
+        require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'lesJaimes.php';
+    break;
+    
+    case 'aimerPoste':
+        $idPoste = htmlentities($_POST['idPoste']);
+        $pdo->aimerPoste($idPoste);
+    break;
+
+    case 'retirerJaime':
+        $idPoste = htmlentities($_POST['idPoste']);
+        $pdo->retirerJaime($idPoste);
+    break;
+
+    case 'supprimerPoste':
+        $idPoste = htmlentities($_POST['idPoste']);
+        $pdo->supprimerPoste($idPoste);
     break;
 }
