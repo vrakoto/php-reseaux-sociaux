@@ -81,8 +81,16 @@ switch ($action) {
         exit();
     break;
 
+
+
     case 'getLesPostes':
         $publications = $pdo->getLesPostes();
+        require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'poste.php';
+    break;
+
+    case 'getLePoste':
+        $idPoste = htmlentities($_GET['idPoste']);
+        $publications = $pdo->getLePoste($idPoste);
         require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'poste.php';
     break;
 
@@ -95,8 +103,30 @@ switch ($action) {
         }
         $pdo->publierPoste($id, $message);
     break;
+    
+    case 'aimerPoste':
+        $idPoste = htmlentities($_POST['idPoste']);
+        $pdo->aimerPoste($idPoste);
+        echo count($pdo->getLesJaimes($idPoste));
+    break;
+
+    case 'supprimerPoste':
+        $idPoste = htmlentities($_POST['idPoste']);
+        $pdo->supprimerPoste($idPoste);
+    break;
+
+
+
+    case 'getLesCommentaires':
+        $idPoste = htmlentities($_GET['idPoste']);
+        $lesCommentaires = $pdo->getLesCommentaires($idPoste);
+        if (count($lesCommentaires) > 0) {
+            require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'lesCommentaires.php';
+        }
+    break;
 
     case 'publierCommentaire':
+        $idCommentaire = generateString(20);
         $idPoste = htmlentities($_POST['idPoste']);
         $message = htmlentities($_POST['commentaire']);
 
@@ -108,33 +138,31 @@ switch ($action) {
             die(header("HTTP/1.0 404 Commentaire trop long (pas plus de 250 caracteres)"));
         }
 
-        $pdo->publierCommentaire($idPoste, $message);
+        $pdo->publierCommentaire($idCommentaire, $idPoste, $message);
+        echo count($pdo->getLesCommentaires($idPoste));
     break;
 
-    case 'afficherLesCommentaires':
-        $idPoste = htmlentities($_GET['idPoste']);
-        $lesCommentaires = $pdo->getLesCommentaires($idPoste);
-        require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'lesCommentaires.php';
+    case 'supprimerCommentaire':
+        $idPoste = htmlentities($_POST['idPoste']);
+        $idCommentaire = htmlentities($_POST['idCommentaire']);
+        $pdo->supprimerCommentaire($idCommentaire);
+        echo count($pdo->getLesCommentaires($idPoste));
     break;
 
-    case 'afficherLesJaimes':
+
+
+    case 'getLesJaimes':
         $idPoste = htmlentities($_GET['idPoste']);
         $lesJaimes = $pdo->getLesJaimes($idPoste);
-        require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'lesJaimes.php';
+        if (count($lesJaimes) > 0) {
+            require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'lesJaimes.php';
+        } else {
+            echo "null";
+        }
     break;
     
-    case 'aimerPoste':
+    case 'retirerJaimePoste':
         $idPoste = htmlentities($_POST['idPoste']);
-        $pdo->aimerPoste($idPoste);
-    break;
-
-    case 'retirerJaime':
-        $idPoste = htmlentities($_POST['idPoste']);
-        $pdo->retirerJaime($idPoste);
-    break;
-
-    case 'supprimerPoste':
-        $idPoste = htmlentities($_POST['idPoste']);
-        $pdo->supprimerPoste($idPoste);
+        $pdo->retirerJaimePoste($idPoste);
     break;
 }

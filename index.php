@@ -30,6 +30,23 @@ switch ($action) {
     case 'pageConnexion':
         require_once 'public' . DIRECTORY_SEPARATOR . 'connexion.php';
     break;
+
+    case 'consulterProfil':
+        $idUtilisateur = htmlentities($_REQUEST['id']);
+        $utilisateur = $pdo->getUtilisateur($idUtilisateur);
+        
+        $id = htmlentities($utilisateur['id']);
+        $avatar = htmlentities($utilisateur['avatar']);
+        $nom = htmlentities($utilisateur['nom']);
+        $prenom = htmlentities($utilisateur['prenom']);
+        $sexe = htmlentities($utilisateur['sexe']);
+        $dateNaissance = htmlentities($utilisateur['dateNaissance']);
+        $ville = htmlentities($utilisateur['ville']);
+        $dateCreation = htmlentities($utilisateur['dateCreation']);
+
+        $publications = $pdo->getLesPostesUtilisateur($id);
+        require_once 'public' . DIRECTORY_SEPARATOR . 'consulterProfil.php';
+    break;
 }
 
 require_once 'elements' . DIRECTORY_SEPARATOR . 'footer.php';

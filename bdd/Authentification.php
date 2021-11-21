@@ -57,6 +57,19 @@ class Authentification {
         return !empty($p->fetch());
     }
 
+    function getUtilisateur(string $idUtilisateur): array
+    {
+        $req = "SELECT id, avatar, nom, prenom, sexe, dateNaissance, ville, dateCreation
+                FROM utilisateur WHERE id = :idUtilisateur";
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'idUtilisateur' => $idUtilisateur
+        ]);
+
+        $utilisateur = $p->fetch();
+        return $utilisateur;
+    }
+
 
     function getLesPostes(): array
     {
@@ -65,6 +78,38 @@ class Authentification {
                 FROM poste p JOIN utilisateur u on p.auteur = u.id
                 ORDER BY datePublication DESC";
         $p = $this->pdo->query($req);
+
+        $publications = $p->fetchAll();
+        return $publications;
+    }
+
+    function getLePoste(string $idPoste): array
+    {
+        $req = "SELECT p.id, auteur, message, datePublication,
+                avatar, nom, prenom
+                FROM poste p JOIN utilisateur u on p.auteur = u.id
+                WHERE p.id = :idPoste
+                ORDER BY datePublication DESC";
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'idPoste' => $idPoste
+        ]);
+
+        $publications = $p->fetchAll();
+        return $publications;
+    }
+
+    function getLesPostesUtilisateur(string $idUtilisateur): array
+    {
+        $req = "SELECT p.id, auteur, message, datePublication,
+                avatar, nom, prenom
+                FROM poste p JOIN utilisateur u on p.auteur = u.id
+                WHERE auteur = :idUtilisateur
+                ORDER BY datePublication DESC";
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'idUtilisateur' => $idUtilisateur
+        ]);
 
         $publications = $p->fetchAll();
         return $publications;
@@ -83,22 +128,46 @@ class Authentification {
         return $p;
     }
 
-    function publierCommentaire(string $idPoste, string $message): PDOStatement
+    function aimerPoste(string $idPoste): PDOStatement
     {
-        $req = "INSERT INTO commentaire (idPoste, auteur, message) VALUES (:idPoste, :auteur, :message)";
-
+        $req = "INSERT INTO poste_aimer (idPoste, auteur) VALUES (:idPoste, :auteur)";
         $p = $this->pdo->prepare($req);
         $p->execute([
             'idPoste' => $idPoste,
-            'auteur' => $_SESSION['id'],
-            'message' => $message
+            'auteur' => $_SESSION['id']
         ]);
+
         return $p;
     }
 
+    function aAimer(string $id): bool
+    {
+        $req = "SELECT auteur FROM poste_aimer WHERE idPoste = :idPoste AND auteur = :auteur";
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'idPoste' => $id,
+            'auteur' => $_SESSION['id']
+        ]);
+
+        return !empty($p->fetch());
+    }
+
+    function supprimerPoste(string $idPoste): PDOStatement
+    {
+        $req = "DELETE FROM poste WHERE id = :idPoste AND auteur = :auteur";
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'idPoste' => $idPoste,
+            'auteur' => $_SESSION['id']
+        ]);
+
+        return $p;
+    }
+
+
     function getLesCommentaires(string $idPoste): array
     {
-        $req = "SELECT idPoste, auteur, message, datePublication, avatar, nom, prenom
+        $req = "SELECT idPoste, auteur, message, datePublication, avatar, nom, prenom, c.id as idCommentaire
                 FROM commentaire c JOIN utilisateur u on c.auteur = u.id
                 WHERE idPoste = :idPoste
                 ORDER BY datePublication DESC";
@@ -110,6 +179,35 @@ class Authentification {
         $publications = $p->fetchAll();
         return $publications;
     }
+
+    function publierCommentaire(string $idCommentaire, string $idPoste, string $message): PDOStatement
+    {
+        $req = "INSERT INTO commentaire (id, idPoste, auteur, message) VALUES (:idCommentaire, :idPoste, :auteur, :message)";
+
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'idCommentaire' => $idCommentaire,
+            'idPoste' => $idPoste,
+            'auteur' => $_SESSION['id'],
+            'message' => $message
+        ]);
+        return $p;
+    }
+
+    function supprimerCommentaire(string $idCommentaire): PDOStatement
+    {
+        $req = "DELETE FROM commentaire WHERE id = :idCommentaire AND auteur = :auteur";
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'idCommentaire' => $idCommentaire,
+            'auteur' => $_SESSION['id']
+        ]);
+
+        return $p;
+    }
+
+
+    
 
     function getLesJaimes(string $idPoste): array
     {
@@ -125,31 +223,7 @@ class Authentification {
         return $likes;
     }
 
-    function aimerPoste(string $idPoste): PDOStatement
-    {
-        $req = "INSERT INTO poste_aimer (idPoste, auteur) VALUES (:idPoste, :auteur)";
-        $p = $this->pdo->prepare($req);
-        $p->execute([
-            'idPoste' => $idPoste,
-            'auteur' => $_SESSION['id']
-        ]);
-
-        return $p;
-    }
-
-    function aAimer(string $idPoste): bool
-    {
-        $req = "SELECT auteur FROM poste_aimer WHERE idPoste = :idPoste AND auteur = :auteur";
-        $p = $this->pdo->prepare($req);
-        $p->execute([
-            'idPoste' => $idPoste,
-            'auteur' => $_SESSION['id']
-        ]);
-
-        return !empty($p->fetch());
-    }
-
-    function retirerJaime(string $idPoste): PDOStatement
+    function retirerJaimePoste(string $idPoste): PDOStatement
     {
         $req = "DELETE FROM poste_aimer WHERE idPoste = :idPoste AND auteur = :auteur";
         $p = $this->pdo->prepare($req);
@@ -161,15 +235,5 @@ class Authentification {
         return $p;
     }
 
-    function supprimerPoste(string $idPoste): PDOStatement
-    {
-        $req = "DELETE FROM poste WHERE id = :idPoste AND auteur = :auteur";
-        $p = $this->pdo->prepare($req);
-        $p->execute([
-            'idPoste' => $idPoste,
-            'auteur' => $_SESSION['id']
-        ]);
-
-        return $p;
-    }
+    
 }

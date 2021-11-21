@@ -5,7 +5,6 @@ $(document).ready(function () {
         $(".navbar-menu").toggleClass("is-active");
     });
 
-    // Affiche tous les postes
     getLesPostes();
 });
 
@@ -37,25 +36,6 @@ function showErrorPopup(e)
         }
     })
 }
-
-
-function getLesPostes()
-{
-    $.ajax
-    (
-        {
-            type: 'get',
-            url: 'controller/ajax.php?action=getLesPostes',
-            success: (e) => {
-                $('#postes').append(e);
-            },
-            error: (e) => {
-                showErrorInput(e);
-            }
-        }
-    )
-}
-
 
 function verificationInscription()
 {
@@ -110,6 +90,42 @@ function verificationConnexion()
     )
 }
 
+
+function getLesPostes()
+{
+    $.ajax
+    (
+        {
+            type: 'get',
+            url: 'controller/ajax.php?action=getLesPostes',
+            success: (e) => {
+                $('#postes').append(e);
+            },
+            error: (e) => {
+                showErrorInput(e);
+            }
+        }
+    )
+}
+
+function getLePoste(idPoste, lePoste)
+{
+    $.ajax
+    (
+        {
+            type: 'get',
+            url: 'controller/ajax.php?action=getLePoste',
+            data: 'idPoste=' + idPoste,
+            success: (e) => {
+                lePoste.replaceWith(e);
+            },
+            error: (e) => {
+                showErrorInput(e);
+            }
+        }
+    )
+}
+
 function publierPoste()
 {
     let posteMessage = $('#posteMessage').val();
@@ -120,7 +136,7 @@ function publierPoste()
             url: 'controller/ajax.php?action=publierPoste',
             data: 'posteMessage=' + posteMessage,
             success: (e) => {
-                $('#posteMessage').val(''); // Supprime tout le contenu dans le textarea
+                $('#posteMessage').val('');
                 $('#postes').empty();
                 getLesPostes();
             },
@@ -131,8 +147,28 @@ function publierPoste()
     )
 }
 
-function supprimerPoste(idPoste)
+function aimerPoste(idPoste, lePoste)
 {
+    const parent = $(lePoste).closest('.poste-container');
+    $.ajax
+    (
+        {
+            type: 'post',
+            url: 'controller/ajax.php?action=aimerPoste',
+            data: 'idPoste=' + idPoste,
+            success: (e) => {
+                getLePoste(idPoste, parent);
+            },
+            error: (e) => {
+                showErrorPopup(e);
+            }
+        }
+    )
+}
+
+function supprimerPoste(idPoste, lePoste)
+{
+    const parent = $(lePoste).closest('.poste-container');
     $.ajax
     (
         {
@@ -140,8 +176,7 @@ function supprimerPoste(idPoste)
             url: 'controller/ajax.php?action=supprimerPoste',
             data: 'idPoste=' + idPoste,
             success: (e) => {
-                $('#postes').empty();
-                getLesPostes();
+                getLePoste(idPoste, parent);
             },
             error: (e) => {
                 showErrorPopup(e);
@@ -156,20 +191,19 @@ function afficherCommenter(lePoste)
     $(lePoste).closest('.poste-container').find('.commentaire').toggleClass("toggleCom");
 }
 
-
-function afficherLesCommentaires(idPoste, lePoste)
+function getLesCommentaires(idPoste, lePoste)
 {
     const divCommentaires = $(lePoste).closest('.poste-container').find('.lesCommentaires');
     $.ajax
     (
         {
             type: 'get',
-            url: 'controller/ajax.php?action=afficherLesCommentaires',
+            url: 'controller/ajax.php?action=getLesCommentaires',
             data: 'idPoste=' + idPoste,
             success: (e) => {
                 divCommentaires.empty();
                 divCommentaires.append(e);
-                divCommentaires.toggleClass("toggleCom");
+                divCommentaires.css({display: "block"});
             },
             error: (e) => {
                 showErrorPopup(e);
@@ -178,9 +212,17 @@ function afficherLesCommentaires(idPoste, lePoste)
     )
 }
 
+function fermerLesCommentaires(lePoste)
+{
+    $(lePoste).closest('.lesCommentaires').css({display: "none"});
+}
+
 function publierCommentaire(idPoste, commentaire)
 {
     const message = $(commentaire).prev().val();
+    const parent = $(commentaire).closest('.poste-container');
+    const divCommentaires = parent.find('.lesCommentaires');
+
     $.ajax
     (
         {
@@ -188,9 +230,29 @@ function publierCommentaire(idPoste, commentaire)
             url: 'controller/ajax.php?action=publierCommentaire',
             data: 'idPoste=' + idPoste + '&commentaire=' + message,
             success: (e) => {
-                $('#postes').empty();
+                parent.find('#nbCommentaire').text(e);
+                getLesCommentaires(idPoste, divCommentaires);
                 $(commentaire).prev().val('');
-                getLesPostes();
+            },
+            error: (e) => {
+                showErrorPopup(e);
+            }
+        }
+    )
+}
+
+function supprimerCommentaire(idPoste, idCommentaire, lePoste)
+{
+    const parent = $(lePoste).closest('.poste-container');
+    $.ajax
+    (
+        {
+            type: 'post',
+            url: 'controller/ajax.php?action=supprimerCommentaire',
+            data: 'idPoste=' + idPoste + '&idCommentaire=' + idCommentaire,
+            success: (e) => {
+                parent.find('#nbCommentaire').text(e);
+                getLesCommentaires(idPoste, lePoste);
             },
             error: (e) => {
                 showErrorPopup(e);
@@ -200,26 +262,28 @@ function publierCommentaire(idPoste, commentaire)
 }
 
 
-function afficherLesJaimes(idPoste)
+function getLesJaimes(idPoste)
 {
     $.ajax
     (
         {
             type: 'get',
-            url: 'controller/ajax.php?action=afficherLesJaimes',
+            url: 'controller/ajax.php?action=getLesJaimes',
             data: 'idPoste=' + idPoste,
             success: (e) => {
-                msgPopup.empty();
-                msgPopup.css({backgroundColor: "unset", border: "2px solid #000"});
-                msgPopup.append(e); // Affiche tout le contenu et pas le responseText cf méthode showErrorPopup()
-                msgPopup_container.css({display: "block"});
+                if (e !== 'null') {
+                    msgPopup.empty();
+                    msgPopup.css({backgroundColor: "unset", border: "2px solid #000"});
+                    msgPopup.append(e);
+                    msgPopup_container.css({display: "block"});
 
-                $(window).click((e) => {
-                    if (e.target == msgPopup_container[0]) {
-                        e.stopPropagation();
-                        msgPopup_container.css({display: "none"});
-                    }
-                })
+                    msgPopup_container.click((e) => {
+                        if (e.target === msgPopup_container[0]) {
+                            msgPopup.css({backgroundColor: "#f8d7da", border: "unset"});
+                            msgPopup_container.css({display: "none"});
+                        }
+                    });
+                }
             },
             error: (e) => {
                 showErrorPopup(e);
@@ -228,36 +292,17 @@ function afficherLesJaimes(idPoste)
     )
 }
 
-function aimerPoste(idPoste)
+function retirerJaimePoste(idPoste, lePoste)
 {
+    const parent = $(lePoste).closest('.poste-container');
     $.ajax
     (
         {
             type: 'post',
-            url: 'controller/ajax.php?action=aimerPoste',
+            url: 'controller/ajax.php?action=retirerJaimePoste',
             data: 'idPoste=' + idPoste,
             success: (e) => {
-                $('#postes').empty();
-                getLesPostes();
-            },
-            error: (e) => {
-                showErrorPopup(e);
-            }
-        }
-    )
-}
-
-function retirerJaime(idPoste)
-{
-    $.ajax
-    (
-        {
-            type: 'post',
-            url: 'controller/ajax.php?action=retirerJaime',
-            data: 'idPoste=' + idPoste,
-            success: (e) => {
-                $('#postes').empty();
-                getLesPostes();
+                getLePoste(idPoste, parent);
             },
             error: (e) => {
                 showErrorPopup(e);
