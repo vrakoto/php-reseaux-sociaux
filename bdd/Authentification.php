@@ -99,13 +99,18 @@ class Authentification {
         return $publications;
     }
 
-    function getLesPostesUtilisateur(string $idUtilisateur): array
+    function getLesPostesUtilisateur(string $idUtilisateur, int $limit = NULL): array
     {
+        
         $req = "SELECT p.id, auteur, message, datePublication,
                 avatar, nom, prenom
                 FROM poste p JOIN utilisateur u on p.auteur = u.id
                 WHERE auteur = :idUtilisateur
                 ORDER BY datePublication DESC";
+        if ($limit !== NULL) {
+            $req .= " LIMIT $limit";
+        }
+
         $p = $this->pdo->prepare($req);
         $p->execute([
             'idUtilisateur' => $idUtilisateur
@@ -180,6 +185,25 @@ class Authentification {
         return $publications;
     }
 
+    function getLesCommentairesUtilisateur(string $idUtilisateur, int $limit = NULL): array
+    {
+        $req = "SELECT idPoste, auteur, message, datePublication, avatar, nom, prenom, c.id as idCommentaire
+                FROM commentaire c JOIN utilisateur u on c.auteur = u.id
+                WHERE c.auteur = :idUtilisateur
+                ORDER BY c.datePublication DESC";
+        if ($limit !== NULL) {
+            $req .= " LIMIT $limit";
+        }
+        
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'idUtilisateur' => $idUtilisateur
+        ]);
+
+        $commentaires = $p->fetchAll();
+        return $commentaires;
+    }
+    
     function publierCommentaire(string $idCommentaire, string $idPoste, string $message): PDOStatement
     {
         $req = "INSERT INTO commentaire (id, idPoste, auteur, message) VALUES (:idCommentaire, :idPoste, :auteur, :message)";

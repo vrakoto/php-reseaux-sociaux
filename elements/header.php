@@ -36,14 +36,14 @@
             <div class="navbar-end">
                 <div class="navbar-item">
                     <div class="buttons">
-                        <?php if (!$connecte): ?>
+                        <?php if (!$connecte) : ?>
                             <a href="index.php?action=pageInscription" class="button is-primary">
                                 <strong>Inscription</strong>
                             </a>
                             <a href="index.php?action=pageConnexion" class="button is-light">
                                 Connexion
                             </a>
-                        <?php else: ?>
+                        <?php else : ?>
                             <a href="controller/ajax.php?action=deconnexion" class="button is-danger">
                                 Déconnexion
                             </a>
@@ -56,4 +56,8 @@
 
     <div class="has-text-centered">
         <div class="error-message" style="display: none;"></div>
+    </div>
+
+    <div id="modal-msg">
+        <div id="modal-content"></div>
     </div>

@@ -1,4 +1,4 @@
-<a class="close title is-2" onclick="fermerLesCommentaires(this)">&times;</a>
+<!-- <a class="close title is-2" onclick="fermerLesCommentaires(this)">&times;</a> -->
 
 <?php foreach ($lesCommentaires as $commentaire) : ?>
     <?php
@@ -19,7 +19,7 @@
                 </figure>
             </div>
 
-            <a href="index.php?action=consulterProfil&idUtilisateur=<?= $idAuteur ?>" target="_blank" class="is-4 is-underlined mr-5"><?= $prenom . ' ' . $nom ?></a>
+            <a href="index.php?action=consulterProfil&id=<?= $idAuteur ?>" target="_blank" class="is-4 is-underlined mr-5"><?= $prenom . ' ' . $nom ?></a>
             <p><?= $message ?></p>
             
             <?php if ($connecte && $sid === $idAuteur): ?>

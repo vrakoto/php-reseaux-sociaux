@@ -20,15 +20,15 @@ $action = $_REQUEST['action'];
 switch ($action) {
     case 'accueil':
         $publications = $pdo->getLesPostes();
-        require_once 'public' . DIRECTORY_SEPARATOR . 'accueil.php';
+        require_once $root . 'public' . DIRECTORY_SEPARATOR . 'accueil.php';
     break;
 
     case 'pageInscription':
-        require_once 'public' . DIRECTORY_SEPARATOR . 'inscription.php';
+        require_once $root . 'public' . DIRECTORY_SEPARATOR . 'inscription.php';
     break;
 
     case 'pageConnexion':
-        require_once 'public' . DIRECTORY_SEPARATOR . 'connexion.php';
+        require_once $root . 'public' . DIRECTORY_SEPARATOR . 'connexion.php';
     break;
 
     case 'consulterProfil':
@@ -44,8 +44,25 @@ switch ($action) {
         $ville = htmlentities($utilisateur['ville']);
         $dateCreation = htmlentities($utilisateur['dateCreation']);
 
+        $publications = $pdo->getLesPostesUtilisateur($id, 3);
+        $lesCommentaires = $pdo->getLesCommentairesUtilisateur($id, 5);
+        require_once 'public' . DIRECTORY_SEPARATOR . 'profil.php';
+    break;
+
+    case 'sujetsUtilisateur':
+        $id = htmlentities($_REQUEST['id']);
         $publications = $pdo->getLesPostesUtilisateur($id);
-        require_once 'public' . DIRECTORY_SEPARATOR . 'consulterProfil.php';
+        echo "<div class='container mt-5'>";
+        require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'poste.php';
+        echo "</div>";
+    break;
+
+    case 'commentairesUtilisateur':
+        $id = htmlentities($_REQUEST['id']);
+        $lesCommentaires = $pdo->getLesCommentairesUtilisateur($id);
+        echo "<div class='container mt-5'>";
+        require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'lesCommentaires.php';
+        echo "</div>";
     break;
 }
 

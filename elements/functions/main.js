@@ -244,6 +244,8 @@ function publierCommentaire(idPoste, commentaire)
 function supprimerCommentaire(idPoste, idCommentaire, lePoste)
 {
     const parent = $(lePoste).closest('.poste-container');
+    const url = window.location.href;
+
     $.ajax
     (
         {
@@ -252,7 +254,12 @@ function supprimerCommentaire(idPoste, idCommentaire, lePoste)
             data: 'idPoste=' + idPoste + '&idCommentaire=' + idCommentaire,
             success: (e) => {
                 parent.find('#nbCommentaire').text(e);
-                getLesCommentaires(idPoste, lePoste);
+                
+                if (url.indexOf("consulterProfil") != -1) {
+                    $(lePoste).closest('.unCommentaire').remove();
+                } else {
+                    getLesCommentaires(idPoste, lePoste);
+                }
             },
             error: (e) => {
                 showErrorPopup(e);
