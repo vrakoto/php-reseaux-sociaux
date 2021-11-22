@@ -1,19 +1,18 @@
 <?php
-session_start();
-// Fichier qui n'inclut pas la partie HTML mais qui sert uniquement d'office au traitement  de données.
 $root = dirname(__DIR__) . DIRECTORY_SEPARATOR;
-require_once $root . 'bdd' . DIRECTORY_SEPARATOR . 'Authentification.php';
-$pdo = new Authentification;
-require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'functions' . DIRECTORY_SEPARATOR . 'helper.php';
-
-$connecte = FALSE;
-if ($pdo->connecte()) {
-    $sid = $_SESSION['id'];
-    $connecte = $pdo->connecte();
-}
-
-$action = $_REQUEST['action'];
+$action = $_REQUEST['c'];
 switch ($action) {
+    case 'rechercherPoste':
+        $type = htmlentities($_GET['type']); 
+        $laRecherche = htmlentities($_GET['valeur']);
+        $publications = $pdo->rechercherPoste($type, $laRecherche);
+        if (count($publications) > 0) {
+            require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'poste.php';
+        } else {
+            echo "<div class='title is-3 mt-6 has-text-centered'>Aucun résultat pour \"$laRecherche\".</div>";
+        }
+    break;
+
     case 'inscription':
         $id = htmlentities($_POST['identifiant']);
         $nom = htmlentities($_POST['nom']);
@@ -77,7 +76,7 @@ switch ($action) {
 
     case 'deconnexion':
         unset($_SESSION['id']);
-        header('Location:../index.php?action=accueil');
+        header('Location:index.php?action=accueil');
         exit();
     break;
 

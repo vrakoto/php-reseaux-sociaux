@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="has-navbar-fixed-top">
 
 <head>
     <meta charset="UTF-8">
@@ -13,7 +13,7 @@
 
 <body>
 
-    <nav class="navbar" role="navigation" aria-label="main navigation">
+    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
             <a class="navbar-item is-size-4">
                 My Network
@@ -33,6 +33,28 @@
                 </a>
             </div>
 
+            <?php if (strpos($_SERVER['REQUEST_URI'], "accueil")): ?>
+                <div class="navbar-item mt-1">
+                    <div class="control mr-3">
+                        <div class="select">
+                            <select id="saisieRecherche">
+                                <option value="utilisateur">Rechercher poste par utilisateur</option>
+                                <option value="sujet">Rechercher poste par mot-clé</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="field is-grouped">
+                        <p class="control is-expanded">
+                            <input class="input" type="text" id="rechercher" placeholder="Rechercher ...">
+                        </p>
+                        <p class="control">
+                            <button class="button is-info" onclick="rechercherPoste($('#saisieRecherche').val(), $('#rechercher').val())">Rechercher</button>
+                        </p>
+                    </div>
+                </div>
+            <?php endif ?>
+
             <div class="navbar-end">
                 <div class="navbar-item">
                     <div class="buttons">
@@ -44,7 +66,29 @@
                                 Connexion
                             </a>
                         <?php else : ?>
-                            <a href="controller/ajax.php?action=deconnexion" class="button is-danger">
+
+                            <div class="dropdown mr-3">
+                                <div class="dropdown-trigger">
+                                    <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                                        <span>Paramètres</span>
+                                        <span class="icon is-small">
+                                            <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                                    <div class="dropdown-content">
+                                        <a class="dropdown-item">
+                                            ...
+                                        </a>
+                                        <a href="#" class="dropdown-item">
+                                            Confidentialité
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <a href="index.php?action=ajax&c=deconnexion" class="button is-danger">
                                 Déconnexion
                             </a>
                         <?php endif ?>

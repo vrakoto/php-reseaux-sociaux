@@ -2,6 +2,8 @@
 session_start();
 $root = __DIR__ . DIRECTORY_SEPARATOR;
 require_once $root . 'bdd' . DIRECTORY_SEPARATOR . 'Authentification.php';
+require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'functions' . DIRECTORY_SEPARATOR . 'helper.php';
+
 $pdo = new Authentification;
 $connecte = FALSE;
 if ($pdo->connecte()) {
@@ -9,14 +11,19 @@ if ($pdo->connecte()) {
     $sid = $_SESSION['id'];
 }
 
-require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'functions' . DIRECTORY_SEPARATOR . 'helper.php';
+if (!isset($_REQUEST['action'])) {
+    $_REQUEST['action'] = 'accueil';
+}
+
+if ($_REQUEST['action'] === 'ajax') {
+    // Fichier qui n'inclut pas la partie HTML mais qui sert uniquement d'office au traitement de données.
+    require_once $root . 'controller' . DIRECTORY_SEPARATOR . 'ajax.php';
+    exit();
+}
+
 require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'header.php';
 
-if (!isset($_REQUEST['action']))
-    $_REQUEST['action'] = 'accueil';
-
 $action = $_REQUEST['action'];
-
 switch ($action) {
     case 'accueil':
         $publications = $pdo->getLesPostes();
@@ -24,10 +31,18 @@ switch ($action) {
     break;
 
     case 'pageInscription':
+        if ($connecte) {
+            header('Location:index.php?action=accueil');
+            exit();
+        }
         require_once $root . 'public' . DIRECTORY_SEPARATOR . 'inscription.php';
     break;
 
     case 'pageConnexion':
+        if ($connecte) {
+            header('Location:index.php?action=accueil');
+            exit();
+        }
         require_once $root . 'public' . DIRECTORY_SEPARATOR . 'connexion.php';
     break;
 

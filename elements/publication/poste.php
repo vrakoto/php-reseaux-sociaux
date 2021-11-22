@@ -48,7 +48,7 @@
                         <button class="card-footer-item" onclick="retirerJaimePoste('<?= $idPoste ?>', this)">Ne plus aimer</button>
                     <?php endif ?>
 
-                    <button class="card-footer-item" onclick="afficherCommenter(this)">Commenter</button>
+                    <button class="card-footer-item" onclick="ouvrirCommenter(this)">Commenter</button>
                 <?php endif ?>
 
                 <?php if ($connecte && $sid === $idAuteur) : ?>

@@ -16,6 +16,27 @@ class Authentification {
         return !empty($_SESSION['id']);
     }
 
+    
+    function rechercherPoste(string $typeRecherche, string $valeur): array
+    {
+        $req = "SELECT p.id, auteur, message, datePublication,
+                avatar, nom, prenom
+                FROM poste p JOIN utilisateur u on p.auteur = u.id
+                WHERE ";
+
+        if ($typeRecherche === 'sujet') {
+            $req .= " message";
+        } else {
+            $req .= " auteur";
+        }
+        $req .= " LIKE ? ORDER BY datePublication DESC";
+        $p = $this->pdo->prepare($req);
+        $p->execute(["$valeur%"]);
+
+        $recherche = $p->fetchAll();
+        return $recherche;
+    }
+
     function verifierIdentifiant($id): bool
     {
         $req = "SELECT id FROM utilisateur WHERE id = :id";

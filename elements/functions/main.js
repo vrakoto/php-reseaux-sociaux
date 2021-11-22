@@ -1,4 +1,12 @@
 $(document).ready(function () {
+    const dropdown = document.querySelector('.dropdown');
+    if (dropdown) { // Si Dropdown existe
+        dropdown.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdown.classList.toggle('is-active');
+        });
+    }
+
     // Navmenu pour mobile / tablette / petit écran
     $(".navbar-burger").click(function () {
         $(".navbar-burger").toggleClass("is-active");
@@ -19,14 +27,14 @@ function showErrorInput(e)
 {
     msgInput_container.empty();
     msgInput_container.css({display: "block"});
-    msgInput_container.append("<p class='error-text'>" + e.statusText + "</p>");
+    msgInput_container.append("<p class='error-text'>" + e + "</p>");
 }
 
 function showErrorPopup(e)
 {
     msgPopup.empty();
     $('#modal-content p').empty();
-    msgPopup.append("<p>" + e.statusText + "</p>");
+    msgPopup.append("<p>" + e + "</p>");
     msgPopup_container.css({display: "block"});
 
     $(window).click((e) => {
@@ -35,6 +43,30 @@ function showErrorPopup(e)
             msgPopup_container.css({display: "none"});
         }
     })
+}
+
+function rechercherPoste(type, valeur)
+{
+    let recherche = 'utilisateur';
+    if (type === 'sujet') {
+        recherche = 'sujet';
+    }
+
+    $.ajax
+    (
+        {
+            type: 'get',
+            url: 'index.php?action=ajax&c=rechercherPoste',
+            data: 'type=' + recherche + '&valeur=' + valeur,
+            success: (e) => {
+                $('#postes').empty();
+                $('#postes').append(e);
+            },
+            error: (e) => {
+                showErrorPopup(e.statusText);
+            }
+        }
+    )
 }
 
 function verificationInscription()
@@ -51,7 +83,7 @@ function verificationInscription()
     (
         {
             type: 'post',
-            url: 'controller/ajax.php?action=inscription',
+            url: 'index.php?action=ajax&c=inscription',
             data: 'identifiant=' + identifiant + '&nom=' + nom + '&prenom=' + prenom + '&mdp=' + mdp + '&sexe=' + sexe + '&dateNaissance=' + dateNaissance + '&ville=' + ville,
             success: (e) => {
                 window.location.href = "index.php?action=pageConnexion";
@@ -78,13 +110,13 @@ function verificationConnexion()
     (
         {
             type: 'post',
-            url: 'controller/ajax.php?action=connexion',
+            url: 'index.php?action=ajax&c=connexion',
             data: 'id=' + id + '&mdp=' + mdp,
             success: (e) => {
                 window.location.href = "index.php?action=accueil";
             },
             error: (e) => {
-                showErrorInput(e);
+                showErrorInput(e.statusText);
             }
         }
     )
@@ -97,12 +129,12 @@ function getLesPostes()
     (
         {
             type: 'get',
-            url: 'controller/ajax.php?action=getLesPostes',
+            url: 'index.php?action=ajax&c=getLesPostes',
             success: (e) => {
                 $('#postes').append(e);
             },
             error: (e) => {
-                showErrorInput(e);
+                showErrorInput(e.statusText);
             }
         }
     )
@@ -114,13 +146,13 @@ function getLePoste(idPoste, lePoste)
     (
         {
             type: 'get',
-            url: 'controller/ajax.php?action=getLePoste',
+            url: 'index.php?action=ajax&c=getLePoste',
             data: 'idPoste=' + idPoste,
             success: (e) => {
                 lePoste.replaceWith(e);
             },
             error: (e) => {
-                showErrorInput(e);
+                showErrorInput(e.statusText);
             }
         }
     )
@@ -133,7 +165,7 @@ function publierPoste()
     (
         {
             type: 'post',
-            url: 'controller/ajax.php?action=publierPoste',
+            url: 'index.php?action=ajax&c=publierPoste',
             data: 'posteMessage=' + posteMessage,
             success: (e) => {
                 $('#posteMessage').val('');
@@ -141,7 +173,7 @@ function publierPoste()
                 getLesPostes();
             },
             error: (e) => {
-                showErrorPopup(e);
+                showErrorPopup(e.statusText);
             }
         }
     )
@@ -154,13 +186,13 @@ function aimerPoste(idPoste, lePoste)
     (
         {
             type: 'post',
-            url: 'controller/ajax.php?action=aimerPoste',
+            url: 'index.php?action=ajax&c=aimerPoste',
             data: 'idPoste=' + idPoste,
             success: (e) => {
                 getLePoste(idPoste, parent);
             },
             error: (e) => {
-                showErrorPopup(e);
+                showErrorPopup(e.statusText);
             }
         }
     )
@@ -173,20 +205,20 @@ function supprimerPoste(idPoste, lePoste)
     (
         {
             type: 'post',
-            url: 'controller/ajax.php?action=supprimerPoste',
+            url: 'index.php?action=ajax&c=supprimerPoste',
             data: 'idPoste=' + idPoste,
             success: (e) => {
                 getLePoste(idPoste, parent);
             },
             error: (e) => {
-                showErrorPopup(e);
+                showErrorPopup(e.statusText);
             }
         }
     )
 }
 
 
-function afficherCommenter(lePoste)
+function ouvrirCommenter(lePoste)
 {
     $(lePoste).closest('.poste-container').find('.commentaire').toggleClass("toggleCom");
 }
@@ -198,7 +230,7 @@ function getLesCommentaires(idPoste, lePoste)
     (
         {
             type: 'get',
-            url: 'controller/ajax.php?action=getLesCommentaires',
+            url: 'index.php?action=ajax&c=getLesCommentaires',
             data: 'idPoste=' + idPoste,
             success: (e) => {
                 divCommentaires.empty();
@@ -206,7 +238,7 @@ function getLesCommentaires(idPoste, lePoste)
                 divCommentaires.css({display: "block"});
             },
             error: (e) => {
-                showErrorPopup(e);
+                showErrorPopup(e.statusText);
             }
         }
     )
@@ -227,7 +259,7 @@ function publierCommentaire(idPoste, commentaire)
     (
         {
             type: 'post',
-            url: 'controller/ajax.php?action=publierCommentaire',
+            url: 'index.php?action=ajax&c=publierCommentaire',
             data: 'idPoste=' + idPoste + '&commentaire=' + message,
             success: (e) => {
                 parent.find('#nbCommentaire').text(e);
@@ -235,7 +267,7 @@ function publierCommentaire(idPoste, commentaire)
                 $(commentaire).prev().val('');
             },
             error: (e) => {
-                showErrorPopup(e);
+                showErrorPopup(e.statusText);
             }
         }
     )
@@ -250,7 +282,7 @@ function supprimerCommentaire(idPoste, idCommentaire, lePoste)
     (
         {
             type: 'post',
-            url: 'controller/ajax.php?action=supprimerCommentaire',
+            url: 'index.php?action=ajax&c=supprimerCommentaire',
             data: 'idPoste=' + idPoste + '&idCommentaire=' + idCommentaire,
             success: (e) => {
                 parent.find('#nbCommentaire').text(e);
@@ -262,7 +294,7 @@ function supprimerCommentaire(idPoste, idCommentaire, lePoste)
                 }
             },
             error: (e) => {
-                showErrorPopup(e);
+                showErrorPopup(e.statusText);
             }
         }
     )
@@ -275,7 +307,7 @@ function getLesJaimes(idPoste)
     (
         {
             type: 'get',
-            url: 'controller/ajax.php?action=getLesJaimes',
+            url: 'index.php?action=ajax&c=getLesJaimes',
             data: 'idPoste=' + idPoste,
             success: (e) => {
                 if (e !== 'null') {
@@ -293,7 +325,7 @@ function getLesJaimes(idPoste)
                 }
             },
             error: (e) => {
-                showErrorPopup(e);
+                showErrorPopup(e.statusText);
             }
         }
     )
@@ -306,13 +338,13 @@ function retirerJaimePoste(idPoste, lePoste)
     (
         {
             type: 'post',
-            url: 'controller/ajax.php?action=retirerJaimePoste',
+            url: 'index.php?action=ajax&c=retirerJaimePoste',
             data: 'idPoste=' + idPoste,
             success: (e) => {
                 getLePoste(idPoste, parent);
             },
             error: (e) => {
-                showErrorPopup(e);
+                showErrorPopup(e.statusText);
             }
         }
     )

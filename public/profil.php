@@ -16,7 +16,10 @@
             </div>
 
             <div class="is-flex mb-5">
-                <a href="#" class="card-footer-item">Ajouter en ami</a>
+                <?php if ($connecte && $sid !== $id): ?>
+                    <a href="index.php?action=ajouterAmi&id=<?= $id ?>" class="card-footer-item">Ajouter en ami</a>
+                <?php endif ?>
+                
                 <a href="#" class="card-footer-item">Amis</a>
             </div>
 
