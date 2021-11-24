@@ -16,11 +16,15 @@
             </div>
 
             <div class="is-flex mb-5">
-                <?php if ($connecte && $sid !== $id): ?>
-                    <a href="index.php?action=ajouterAmi&id=<?= $id ?>" class="card-footer-item">Ajouter en ami</a>
+                <?php if ($pasMonProfil): ?>
+                    <?php if (!$pdo->estMonAmi($id)): ?>
+                        <a href="index.php?action=ajax&c=ajouterAmi&id=<?= $id ?>" class="card-footer-item">Ajouter en Ami</a>
+                    <?php else: ?>
+                        <a href="index.php?action=ajax&c=retirerAmi&id=<?= $id ?>" class="card-footer-item">Retirer Ami</a>
+                    <?php endif ?>
                 <?php endif ?>
                 
-                <a href="#" class="card-footer-item">Amis</a>
+                <a href="index.php?action=voirLesAmis&id=<?= $id ?>" class="card-footer-item">Amis</a>
             </div>
 
             <p class="title is-5 mb-2 mt-6">A propos de moi</p>

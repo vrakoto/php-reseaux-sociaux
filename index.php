@@ -18,7 +18,6 @@ if (!isset($_REQUEST['action'])) {
 if ($_REQUEST['action'] === 'ajax') {
     // Fichier qui n'inclut pas la partie HTML mais qui sert uniquement d'office au traitement de données.
     require_once $root . 'controller' . DIRECTORY_SEPARATOR . 'ajax.php';
-    exit();
 }
 
 require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'header.php';
@@ -48,16 +47,24 @@ switch ($action) {
 
     case 'consulterProfil':
         $idUtilisateur = htmlentities($_REQUEST['id']);
-        $utilisateur = $pdo->getUtilisateur($idUtilisateur);
-        
-        $id = htmlentities($utilisateur['id']);
-        $avatar = htmlentities($utilisateur['avatar']);
-        $nom = htmlentities($utilisateur['nom']);
-        $prenom = htmlentities($utilisateur['prenom']);
-        $sexe = htmlentities($utilisateur['sexe']);
-        $dateNaissance = htmlentities($utilisateur['dateNaissance']);
-        $ville = htmlentities($utilisateur['ville']);
-        $dateCreation = htmlentities($utilisateur['dateCreation']);
+        if (!$pdo->verifierIdentifiant($idUtilisateur)) {
+            header("Location:index.php?action=accueil");
+            exit();
+        }
+
+        $leUtilisateur = $pdo->getUtilisateur($idUtilisateur);
+        $pasMonProfil = ($connecte && $sid !== $idUtilisateur);
+
+        foreach ($leUtilisateur as $utilisateur) {
+            $id = htmlentities($utilisateur['id']);
+            $avatar = htmlentities($utilisateur['avatar']);
+            $nom = htmlentities($utilisateur['nom']);
+            $prenom = htmlentities($utilisateur['prenom']);
+            $sexe = htmlentities($utilisateur['sexe']);
+            $dateNaissance = htmlentities($utilisateur['dateNaissance']);
+            $ville = htmlentities($utilisateur['ville']);
+            $dateCreation = htmlentities($utilisateur['dateCreation']);
+        }
 
         $publications = $pdo->getLesPostesUtilisateur($id, 3);
         $lesCommentaires = $pdo->getLesCommentairesUtilisateur($id, 5);
@@ -78,6 +85,32 @@ switch ($action) {
         echo "<div class='container mt-5'>";
         require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'lesCommentaires.php';
         echo "</div>";
+    break;
+
+    case 'voirLesAmis':
+        $idUtilisateur = htmlentities($_REQUEST['id']);
+        $lesAmis = $pdo->getLesAmis($idUtilisateur);
+
+        if (empty($pdo->getUtilisateur($idUtilisateur))) {
+            echo "Utilisateur inexistant";
+            exit();
+        }
+
+        foreach ($lesAmis as $ami) {
+            $idAmi = htmlentities($ami['idAmi']);
+            $leAmi = $pdo->getUtilisateur($idAmi);
+
+            foreach ($leAmi as $ami) {
+                $avatar = htmlentities($ami['avatar']);
+                $nom = htmlentities($ami['nom']);
+                $prenom = htmlentities($ami['prenom']);
+                $sexe = htmlentities($ami['sexe']);
+                $dateNaissance = htmlentities($ami['dateNaissance']);
+                $ville = htmlentities($ami['ville']);
+                $dateCreation = htmlentities($ami['dateCreation']);
+                require $root . 'public' . DIRECTORY_SEPARATOR . 'amis.php';
+            }
+        } 
     break;
 }
 

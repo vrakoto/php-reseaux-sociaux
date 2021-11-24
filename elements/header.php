@@ -13,7 +13,7 @@
 
 <body>
 
-    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+    <nav class="navbar is-fixed-top fullhd" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
             <a class="navbar-item is-size-4">
                 My Network
@@ -26,14 +26,20 @@
             </a>
         </div>
 
-        <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-menu">
             <div class="navbar-start">
                 <a href="index.php?action=accueil" class="navbar-item">
                     Accueil
                 </a>
+
+                <?php if ($connecte): ?>
+                    <a href="index.php?action=consulterProfil&id=<?= $sid ?>" class="navbar-item">
+                        Mon Profil
+                    </a>
+                <?php endif ?>
             </div>
 
-            <?php if (strpos($_SERVER['REQUEST_URI'], "accueil")): ?>
+            <?php if (strpos($_SERVER['REQUEST_URI'], "accueil")) : ?>
                 <div class="navbar-item mt-1">
                     <div class="control mr-3">
                         <div class="select">
@@ -43,7 +49,7 @@
                             </select>
                         </div>
                     </div>
-                    
+
                     <div class="field is-grouped">
                         <p class="control is-expanded">
                             <input class="input" type="text" id="rechercher" placeholder="Rechercher ...">
@@ -67,9 +73,21 @@
                             </a>
                         <?php else : ?>
 
+                            <a href="index.php?action=voirLesAmis&id=<?= $sid ?>" class="button">
+                                <span class="icon"><i class="fas fa-user-friends" aria-hidden="true"></i></span>
+                                <span>Voir mes amis</span>
+                            </a>
+
+                            <a class="button">
+                                <span class="icon"><i class="fas fa-envelope" aria-hidden="true"></i></span>
+                                <span>Messagerie</span>
+                            </a>
+
                             <div class="dropdown mr-3">
                                 <div class="dropdown-trigger">
                                     <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                                        <span class="icon"><i class="fas fa-cog"></i></span>
+
                                         <span>Paramètres</span>
                                         <span class="icon is-small">
                                             <i class="fas fa-angle-down" aria-hidden="true"></i>

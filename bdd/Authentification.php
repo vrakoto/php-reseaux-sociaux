@@ -87,7 +87,7 @@ class Authentification {
             'idUtilisateur' => $idUtilisateur
         ]);
 
-        $utilisateur = $p->fetch();
+        $utilisateur = $p->fetchAll();
         return $utilisateur;
     }
 
@@ -280,5 +280,64 @@ class Authentification {
         return $p;
     }
 
+
+    function ajouterListeAmi(): PDOStatement
+    {
+        $req = "INSERT INTO amis (idUtilisateur) VALUES (:idUtilisateur)";
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'idUtilisateur' => $_SESSION['id']
+        ]);
+
+        return $p;
+    }
+
+    function ajouterAmi(string $idAmi1, string $idAmi2): PDOStatement
+    {
+        $req = "INSERT INTO amis (idAmi, idUtilisateur) VALUES (:idAmi, :idUtilisateur)";
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'idUtilisateur' => $idAmi1,
+            'idAmi' => $idAmi2
+        ]);
+
+        return $p;
+    }
+
+    function estMonAmi(string $idAmi): bool
+    {
+        $req = "SELECT idAmi FROM amis WHERE idUtilisateur = :idUtilisateur AND idAmi = :idAmi";
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'idUtilisateur' => $_SESSION['id'],
+            'idAmi' => $idAmi
+        ]);
+
+        return !empty($p->fetch());
+    }
+
+    function retirerAmi(string $idAmi): PDOStatement
+    {
+        $req = "DELETE FROM amis WHERE idUtilisateur = :idUtilisateur AND idAmi = :idAmi";
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'idUtilisateur' => $_SESSION['id'],
+            'idAmi' => $idAmi
+        ]);
+
+        return $p;
+    }
+
+    function getLesAmis(string $idUtilisateur): array
+    {
+        $req = "SELECT idAmi FROM amis WHERE idUtilisateur = :idUtilisateur";
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'idUtilisateur' => $idUtilisateur
+        ]);
+
+        $amis = $p->fetchAll();
+        return $amis;
+    }
     
 }

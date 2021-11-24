@@ -63,6 +63,7 @@ switch ($action) {
         }
 
         $pdo->inscrire($id, $nom, $prenom, $mdp, $sexe, $dateNaissance, $ville);
+        $pdo->ajouterListeAmi();
     break;
 
     case 'connexion':
@@ -164,4 +165,23 @@ switch ($action) {
         $idPoste = htmlentities($_POST['idPoste']);
         $pdo->retirerJaimePoste($idPoste);
     break;
+
+
+
+    case 'ajouterAmi':
+        $id = htmlentities($_REQUEST['id']);
+        $pdo->ajouterAmi($sid, $id);
+        $pdo->ajouterAmi($id, $sid);
+        header("Location:index.php?action=consulterProfil&id=" . $id);
+        exit();
+    break;
+
+    case 'retirerAmi':
+        $id = htmlentities($_REQUEST['id']);
+        $pdo->retirerAmi($id);
+        header("Location:index.php?action=consulterProfil&id=" . $id);
+        exit();
+    break;
+
 }
+exit();
