@@ -316,13 +316,13 @@ class Authentification {
         return !empty($p->fetch());
     }
 
-    function retirerAmi(string $idAmi): PDOStatement
+    function retirerAmi(string $idAmi1, string $idAmi2): PDOStatement
     {
         $req = "DELETE FROM amis WHERE idUtilisateur = :idUtilisateur AND idAmi = :idAmi";
         $p = $this->pdo->prepare($req);
         $p->execute([
-            'idUtilisateur' => $_SESSION['id'],
-            'idAmi' => $idAmi
+            'idUtilisateur' => $idAmi1,
+            'idAmi' => $idAmi2
         ]);
 
         return $p;
@@ -330,7 +330,9 @@ class Authentification {
 
     function getLesAmis(string $idUtilisateur): array
     {
-        $req = "SELECT idAmi FROM amis WHERE idUtilisateur = :idUtilisateur";
+        $req = "SELECT idAmi, avatar, nom, prenom FROM amis
+                JOIN utilisateur on amis.idAmi = utilisateur.id
+                WHERE idUtilisateur = :idUtilisateur";
         $p = $this->pdo->prepare($req);
         $p->execute([
             'idUtilisateur' => $idUtilisateur
@@ -339,5 +341,34 @@ class Authentification {
         $amis = $p->fetchAll();
         return $amis;
     }
-    
+
+
+    function envoyerMessage(string $idAmi, string $message): PDOStatement
+    {
+        $req = "INSERT INTO conversation (idUtilisateur, idAmi, message) VALUES (:idUtilisateur, :idAmi, :message)";
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'idUtilisateur' => $_SESSION['id'],
+            'idAmi' => $idAmi,
+            'message' => $message
+        ]);
+
+        return $p;
+    }
+
+    function getLaConversation(string $idAmi): array
+    {
+        $req = "SELECT idAmi, message, dateEnvoie, avatar, nom, prenom
+                FROM conversation c JOIN utilisateur u on c.idAmi = u.id
+                WHERE (idUtilisateur = :idUtilisateur AND idAmi = :idAmi)
+                OR (idUtilisateur = :idAmi AND idAmi = :idUtilisateur)";
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'idUtilisateur' => $_SESSION['id'],
+            'idAmi' => $idAmi,
+        ]);
+
+        $conversation = $p->fetchAll();
+        return $conversation;
+    }
 }

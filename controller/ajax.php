@@ -178,10 +178,66 @@ switch ($action) {
 
     case 'retirerAmi':
         $id = htmlentities($_REQUEST['id']);
-        $pdo->retirerAmi($id);
+        $pdo->retirerAmi($sid, $id);
+        $pdo->retirerAmi($id, $sid);
         header("Location:index.php?action=consulterProfil&id=" . $id);
         exit();
     break;
 
+
+    case 'getLaConversation':
+        $idAmi = htmlentities($_GET['idAmi']);
+        if (empty($pdo->getUtilisateur($idAmi))) {
+            die(header("HTTP/1.0 404 Utilisateur inexistant"));
+        }
+
+        $laConversation = $pdo->getLaConversation($idAmi);
+        echo "<div class='title is-4' id='chat-header'>Discussion avec <span id='idAmi'></span></div>";
+        foreach ($laConversation as $conversation) {
+            $idAmi = htmlentities($conversation['idAmi']);
+            $avatar = htmlentities($conversation['avatar']);
+            $nom = htmlentities($conversation['nom']);
+            $prenom = htmlentities($conversation['prenom']);
+            $message = nl2br(htmlentities($conversation['message']));
+            $dateInit = htmlentities($conversation['dateEnvoie']);
+            $date = date('d-m-Y à H:m', strtotime($dateInit));
+
+            $estAuteur = $sid === $idAmi ? TRUE : FALSE;
+            require $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'conversation.php';
+        }
+        echo <<<HTML
+        <div id="envoie">
+            <textarea class="textarea has-fixed-size mb-3" id="message" placeholder="Ecrire un message"></textarea>
+            <div class="file has-name is-right is-inline-block">
+                <label class="file-label">
+                    <input class="file-input" type="file" id="image">
+                    <span class="file-cta">
+                    <span class="file-icon">
+                        <i class="fas fa-upload"></i>
+                    </span>
+                    <span class="file-label">
+                        Insérer une image
+                    </span>
+                    </span>
+                </label>
+            </div>
+            <button class="button is-primary is-pulled-right" onclick="envoyerMessage()">Envoyer</button>
+        </div>
+HTML;
+    break;
+
+    case 'envoyerMessage':
+        $idAmi = htmlentities($_POST['idAmi']);
+        $message = htmlentities($_POST['message']);
+
+        if (empty($pdo->getUtilisateur($idAmi))) {
+            die(header("HTTP/1.0 404 Utilisateur inexistant"));
+        }
+
+        if (mb_strlen($message) < 1) {
+            die(header("HTTP/1.0 404 Message trop court"));
+        }
+        $pdo->envoyerMessage($idAmi, $message);
+    break;
 }
 exit();

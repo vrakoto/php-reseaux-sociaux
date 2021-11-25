@@ -349,3 +349,68 @@ function retirerJaimePoste(idPoste, lePoste)
         }
     )
 }
+
+function rechercherAmiConversation()
+{
+    const input = $('#rechercheAmiConv').val();
+    const inputFilter = input.toLowerCase();
+    $('.leContact').each(function() {
+        const leAmi = $(this).find('.leContact-nom').text();
+
+        if (!leAmi.includes(inputFilter)) {
+            $(this).addClass("filtrerContact");
+        } else {
+            $(this).removeClass("filtrerContact");
+        }
+    });
+}
+
+let idAmiSelectionner = '';
+function getLaConversation(idAmi)
+{
+    const laConversation = $('#laConversation');
+    $.ajax
+    (
+        {
+            type: 'get',
+            url: 'index.php?action=ajax&c=getLaConversation',
+            data: 'idAmi=' + idAmi,
+            success: (e) => {
+                idAmiSelectionner = idAmi;
+                laConversation.css({display: "flex"});
+                laConversation.empty();
+                laConversation.append(e);
+                laConversation.scrollTop(laConversation.prop("scrollHeight"));
+                
+                $('#idAmi').empty();
+                $('#idAmi').append(idAmi);
+
+                $('#message').focus();
+            },
+            error: (e) => {
+                showErrorPopup(e.statusText);
+            }
+        }
+    )
+}
+
+function envoyerMessage()
+{
+    //const image = $('#image').prop('files');
+    let message = $('#message');
+    $.ajax
+    (
+        {
+            type: 'post',
+            url: 'index.php?action=ajax&c=envoyerMessage',
+            data: 'idAmi=' + idAmiSelectionner + '&message=' + message.val(),
+            success: (e) => {
+                message.val('');
+                getLaConversation(idAmiSelectionner);
+            },
+            error: (e) => {
+                showErrorPopup(e.statusText);
+            }
+        }
+    )
+}

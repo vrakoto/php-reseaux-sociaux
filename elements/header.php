@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="has-navbar-fixed-top">
+<html lang="en" class="has-navbar-fixed-top has-background-light">
 
 <head>
     <meta charset="UTF-8">
@@ -13,10 +13,10 @@
 
 <body>
 
-    <nav class="navbar is-fixed-top fullhd" role="navigation" aria-label="main navigation">
+    <nav class="navbar is-fixed-top fullhd is-dark" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
             <a class="navbar-item is-size-4">
-                My Network
+                <?= $sid ?? 'My Network' ?>
             </a>
 
             <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
@@ -78,7 +78,7 @@
                                 <span>Voir mes amis</span>
                             </a>
 
-                            <a class="button">
+                            <a href="index.php?action=messagerie" class="button">
                                 <span class="icon"><i class="fas fa-envelope" aria-hidden="true"></i></span>
                                 <span>Messagerie</span>
                             </a>

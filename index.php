@@ -96,21 +96,23 @@ switch ($action) {
             exit();
         }
 
+        if (empty($lesAmis)) {
+            echo "Liste vide";
+            exit();
+        }
+
         foreach ($lesAmis as $ami) {
             $idAmi = htmlentities($ami['idAmi']);
-            $leAmi = $pdo->getUtilisateur($idAmi);
-
-            foreach ($leAmi as $ami) {
-                $avatar = htmlentities($ami['avatar']);
-                $nom = htmlentities($ami['nom']);
-                $prenom = htmlentities($ami['prenom']);
-                $sexe = htmlentities($ami['sexe']);
-                $dateNaissance = htmlentities($ami['dateNaissance']);
-                $ville = htmlentities($ami['ville']);
-                $dateCreation = htmlentities($ami['dateCreation']);
-                require $root . 'public' . DIRECTORY_SEPARATOR . 'amis.php';
-            }
+            $avatar = htmlentities($ami['avatar']);
+            $nom = htmlentities($ami['nom']);
+            $prenom = htmlentities($ami['prenom']);
+            require $root . 'public' . DIRECTORY_SEPARATOR . 'amis.php';
         } 
+    break;
+
+    case 'messagerie':
+        $lesAmis = $pdo->getLesAmis($sid);
+        require_once $root . 'public' . DIRECTORY_SEPARATOR . 'messagerie.php';
     break;
 }
 

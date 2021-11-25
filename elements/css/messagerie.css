@@ -1,0 +1,91 @@
+.container {
+    height: 750px;
+    width: 750px;
+}
+
+::placeholder {
+    color: #FFF;
+}
+
+#listeContact {
+    padding: 30px;
+    width: 30%;
+    height: 100%;
+    background-color: #444753;
+}
+
+#rechercheAmiConv {
+    margin-bottom: 20px;
+    background-color: #6a6c75;
+    border: unset;
+    color: #FFF;
+}
+
+.filtrerContact {
+    display: none !important;
+}
+
+.leContact {
+    color: rgba(255, 255, 255, .7);
+    padding: 15px 0;
+    margin: 20px 0;
+}
+
+.leContact img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.leContact:hover {
+    color: rgba(255, 255, 255, 1);
+    cursor: pointer;
+    box-shadow: 10px 10px 10px 10px #333;
+    border-radius: 5px;
+}
+
+
+#chat-header {
+    color: #000;
+}
+
+#laConversation {
+    flex-flow: column nowrap;
+    width: 70%;
+    height: 100%;
+    padding: 20px;
+    overflow: auto;
+    background-color: azure;
+}
+
+.user, .friend {
+    font-size: 15px;
+    padding: 10px;
+    color: white;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.user {
+    background-color: #94c2ed;
+    align-self: flex-end;
+}
+
+.friend {
+    display: flex;
+    background-color: #86bb71;
+    align-self: flex-start;
+}
+
+.friend img {
+    height: 30px;
+    width: 30px;
+    margin-right: 10px;
+    border-radius: 50%;
+}
+
+.date {
+    font-size: .8rem;
+    color: rgba(255, 255, 255, .7);
+}
