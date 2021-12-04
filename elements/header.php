@@ -44,8 +44,8 @@
                     <div class="control mr-3">
                         <div class="select">
                             <select id="saisieRecherche">
-                                <option value="utilisateur">Rechercher poste par utilisateur</option>
                                 <option value="sujet">Rechercher poste par mot-clé</option>
+                                <option value="utilisateur">Rechercher poste par utilisateur</option>
                             </select>
                         </div>
                     </div>
@@ -96,9 +96,7 @@
                                 </div>
                                 <div class="dropdown-menu" id="dropdown-menu" role="menu">
                                     <div class="dropdown-content">
-                                        <a class="dropdown-item">
-                                            ...
-                                        </a>
+                                        <a href="index.php?action=preference" class="dropdown-item">Préférence</a>
                                         <a href="#" class="dropdown-item">
                                             Confidentialité
                                         </a>

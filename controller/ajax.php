@@ -6,6 +6,7 @@ switch ($action) {
         $type = htmlentities($_GET['type']); 
         $laRecherche = htmlentities($_GET['valeur']);
         $publications = $pdo->rechercherPoste($type, $laRecherche);
+        
         if (count($publications) > 0) {
             require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'poste.php';
         } else {
@@ -64,6 +65,7 @@ switch ($action) {
 
         $pdo->inscrire($id, $nom, $prenom, $mdp, $sexe, $dateNaissance, $ville);
         $pdo->ajouterListeAmi();
+        $pdo->creerParametre();
     break;
 
     case 'connexion':
@@ -238,6 +240,65 @@ HTML;
             die(header("HTTP/1.0 404 Message trop court"));
         }
         $pdo->envoyerMessage($idAmi, $message);
+    break;
+
+
+
+    case 'parametreProfil':
+        if (isset($_POST['amis'], $_POST['bio'], $_POST['sujet'], $_POST['commentaire'])) {
+            $amisParam = htmlentities($_POST['amis']);
+            $bioParam = htmlentities($_POST['bio']);
+            $sujetParam = htmlentities($_POST['sujet']);
+            $commentaireParam = htmlentities($_POST['commentaire']);
+
+            $pdo->updateProfil($amisParam, $bioParam, $sujetParam, $commentaireParam);
+        }
+    break;
+
+    case 'parametreCompte':
+        if (isset($_POST['id'], $_POST['mdp'], $_POST['mdp_confirm'], $_POST['nom'], $_POST['prenom'], $_POST['ville'])) {
+            $avatar = htmlentities($_POST['lienAvatar']);
+            $id = htmlentities($_POST['id']);
+            $mdp = htmlentities($_POST['mdp']);
+            $mdp_confirm = htmlentities($_POST['mdp_confirm']);
+            $nom = htmlentities($_POST['nom']);
+            $prenom = htmlentities($_POST['prenom']);
+            $ville = htmlentities($_POST['ville']);
+
+            if (strlen($avatar) < 10) {
+                die(header("HTTP/1.0 404 Lien de l'avatar incorrect"));
+            }
+
+            if (strlen($id) < 2 || $id === $pdo->verifierIdentifiant($id)) {
+                die(header("HTTP/1.0 404 Identifiant trop court ou déjà prit"));
+            }
+
+            if (!empty($mdp)) {
+                if (strlen($mdp) < 2) {
+                    die(header("HTTP/1.0 404 Mot de passe trop court"));
+                }
+
+                if ($mdp !== $mdp_confirm) {
+                    die(header("HTTP/1.0 404 Les mots de passe ne correspondent pas"));
+                }
+            } else {
+                $mdp = $pdo->getUtilisateur($sid)[0]['mdp'];
+            }
+
+            if (strlen($nom) < 2) {
+                die(header("HTTP/1.0 404 Nom trop court"));
+            }
+
+            if (strlen($prenom) < 2) {
+                die(header("HTTP/1.0 404 Prenom trop court"));
+            }
+
+            if (strlen($ville) < 2) {
+                die(header("HTTP/1.0 404 Nom de la ville trop courte"));
+            }
+
+            $pdo->updateCompte($avatar, $id, $mdp, $nom, $prenom, ucfirst($ville));
+        }
     break;
 }
 exit();

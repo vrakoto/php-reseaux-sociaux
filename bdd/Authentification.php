@@ -80,7 +80,7 @@ class Authentification {
 
     function getUtilisateur(string $idUtilisateur): array
     {
-        $req = "SELECT id, avatar, nom, prenom, sexe, dateNaissance, ville, dateCreation
+        $req = "SELECT id, avatar, nom, prenom, mdp, sexe, dateNaissance, ville, dateCreation
                 FROM utilisateur WHERE id = :idUtilisateur";
         $p = $this->pdo->prepare($req);
         $p->execute([
@@ -371,4 +371,82 @@ class Authentification {
         $conversation = $p->fetchAll();
         return $conversation;
     }
+
+
+
+    function creerParametre(): PDOStatement
+    {
+        $req = "INSERT INTO parametre (idUtilisateur) VALUES (:idUtilisateur)";
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'idUtilisateur' => $_SESSION['id']
+        ]);
+
+        return $p;
+    }
+
+    function updateProfil(string $avatar, string $amisParam, string $bioParam, string $sujetParam, string $commentaireParam): PDOStatement
+    {
+        $req = "UPDATE parametre SET amis = :amis, biographie = :biographie, sujet = :sujet, commentaire = :commentaire WHERE idUtilisateur = :idUtilisateur";
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'amis' => $amisParam,
+            'biographie' => $bioParam,
+            'sujet' => $sujetParam,
+            'commentaire' => $commentaireParam,
+            'idUtilisateur' => $_SESSION['id']
+        ]);
+
+        return $p;
+    }
+
+    function updateCompte(string $avatar, string $nouveauIdentifiant, string $mdp, string $nom, string $prenom, string $ville): PDOStatement
+    {
+        $req = "UPDATE utilisateur SET avatar = :avatar, id = :id, mdp = :mdp, nom = :nom, prenom = :prenom, ville = :ville WHERE id = :id";
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'avatar' => $avatar,
+            'id' => $nouveauIdentifiant,
+            'mdp' => $mdp,
+            'nom' => $nom,
+            'prenom' => $prenom,
+            'ville' => $ville,
+            'idUtilisateur' => $_SESSION['id']
+        ]);
+
+        return $p;
+    }
+
+    function recupererParametre(string $idUtilisateur, string $param): string
+    {
+        $req = "SELECT $param FROM parametre WHERE idUtilisateur = :idUtilisateur";
+        $p = $this->pdo->prepare($req);
+        $p->execute([
+            'idUtilisateur' => $idUtilisateur
+        ]);
+
+        $param = $p->fetch()[$param];
+        return $param;
+    }
+
+    function autorisationParametre(string $idUtilisateur, string $param): bool
+    {
+        $param = $this->recupererParametre($idUtilisateur, $param);
+        $allow = TRUE;
+        switch ($param) {
+            case 'AMIS':
+                if (!$this->estMonAmi($idUtilisateur)) {
+                    $allow = FALSE;
+                }
+            break;
+
+            case 'PRIVEE':
+                $allow = FALSE;
+            break;
+        }
+
+        return $allow;
+    }
+
+    
 }

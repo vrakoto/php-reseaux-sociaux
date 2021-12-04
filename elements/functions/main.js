@@ -23,14 +23,14 @@ const msgInput_container = $('.error-message');
 const msgPopup_container = $('#modal-msg');
 const msgPopup = $('#modal-content');
 
-function showErrorInput(e)
+function errorInput(e)
 {
     msgInput_container.empty();
     msgInput_container.css({display: "block"});
     msgInput_container.append("<p class='error-text'>" + e + "</p>");
 }
 
-function showErrorPopup(e)
+function errorPopup(e)
 {
     msgPopup.empty();
     $('#modal-content p').empty();
@@ -63,7 +63,7 @@ function rechercherPoste(type, valeur)
                 $('#postes').append(e);
             },
             error: (e) => {
-                showErrorPopup(e.statusText);
+                errorPopup(e.statusText);
             }
         }
     )
@@ -116,7 +116,7 @@ function verificationConnexion()
                 window.location.href = "index.php?action=accueil";
             },
             error: (e) => {
-                showErrorInput(e.statusText);
+                errorInput(e.statusText);
             }
         }
     )
@@ -134,7 +134,7 @@ function getLesPostes()
                 $('#postes').append(e);
             },
             error: (e) => {
-                showErrorInput(e.statusText);
+                errorInput(e.statusText);
             }
         }
     )
@@ -152,7 +152,7 @@ function getLePoste(idPoste, lePoste)
                 lePoste.replaceWith(e);
             },
             error: (e) => {
-                showErrorInput(e.statusText);
+                errorInput(e.statusText);
             }
         }
     )
@@ -167,13 +167,13 @@ function publierPoste()
             type: 'post',
             url: 'index.php?action=ajax&c=publierPoste',
             data: 'posteMessage=' + posteMessage,
-            success: (e) => {
+            success: () => {
                 $('#posteMessage').val('');
                 $('#postes').empty();
                 getLesPostes();
             },
             error: (e) => {
-                showErrorPopup(e.statusText);
+                errorPopup(e.statusText);
             }
         }
     )
@@ -192,7 +192,7 @@ function aimerPoste(idPoste, lePoste)
                 getLePoste(idPoste, parent);
             },
             error: (e) => {
-                showErrorPopup(e.statusText);
+                errorPopup(e.statusText);
             }
         }
     )
@@ -211,7 +211,7 @@ function supprimerPoste(idPoste, lePoste)
                 getLePoste(idPoste, parent);
             },
             error: (e) => {
-                showErrorPopup(e.statusText);
+                errorPopup(e.statusText);
             }
         }
     )
@@ -238,7 +238,7 @@ function getLesCommentaires(idPoste, lePoste)
                 divCommentaires.css({display: "block"});
             },
             error: (e) => {
-                showErrorPopup(e.statusText);
+                errorPopup(e.statusText);
             }
         }
     )
@@ -267,7 +267,7 @@ function publierCommentaire(idPoste, commentaire)
                 $(commentaire).prev().val('');
             },
             error: (e) => {
-                showErrorPopup(e.statusText);
+                errorPopup(e.statusText);
             }
         }
     )
@@ -294,7 +294,7 @@ function supprimerCommentaire(idPoste, idCommentaire, lePoste)
                 }
             },
             error: (e) => {
-                showErrorPopup(e.statusText);
+                errorPopup(e.statusText);
             }
         }
     )
@@ -325,7 +325,7 @@ function getLesJaimes(idPoste)
                 }
             },
             error: (e) => {
-                showErrorPopup(e.statusText);
+                errorPopup(e.statusText);
             }
         }
     )
@@ -344,7 +344,7 @@ function retirerJaimePoste(idPoste, lePoste)
                 getLePoste(idPoste, parent);
             },
             error: (e) => {
-                showErrorPopup(e.statusText);
+                errorPopup(e.statusText);
             }
         }
     )
@@ -388,7 +388,7 @@ function getLaConversation(idAmi)
                 $('#message').focus();
             },
             error: (e) => {
-                showErrorPopup(e.statusText);
+                errorPopup(e.statusText);
             }
         }
     )
@@ -409,7 +409,77 @@ function envoyerMessage()
                 getLaConversation(idAmiSelectionner);
             },
             error: (e) => {
-                showErrorPopup(e.statusText);
+                errorPopup(e.statusText);
+            }
+        }
+    )
+}
+
+$('.tabs-nav a').click(function() {
+    $('.tabs-nav li').removeClass('active');
+    $(this).parent().addClass('active');
+
+    let currentTab = $(this).attr('href');
+    $('.tabs-content .tab').hide();
+    $(currentTab).show();
+
+    return false;
+});
+
+
+function popupParam()
+{
+    $('#success').empty();
+    $('#success').append("Profil mis-à-jour !");
+    $('#success').css({display: "block"});
+}
+
+function profilParams()
+{
+    const amis = $('#amisParam').val();
+    const bio = $('#bioParam').val();
+    const sujet = $('#sujetParam').val();
+    const commentaire = $('#comParam').val();
+
+    $.ajax
+    (
+        {
+            type: 'post',
+            url: 'index.php?action=ajax&c=parametreProfil',
+            data: 'amis=' + amis + '&bio=' + bio + '&sujet=' + sujet + '&commentaire=' + commentaire,
+            success: () => {
+                popupParam();
+            },
+            error: (e) => {
+                errorInput(e.statusText);
+            }
+        }
+    )
+}
+
+
+
+function compteParams()
+{
+    const avatar = $('#lienAvatar').val();
+    const id = $('#identifiant').val();
+    const mdp = $('#mdp').val();
+    const mdp_confirm = $('#mdp_confirm').val();
+    const nom = $('#nom').val();
+    const prenom = $('#prenom').val();
+    const ville = $('#ville').val();
+
+    $.ajax
+    (
+        {
+            type: 'post',
+            url: 'index.php?action=ajax&c=parametreCompte',
+            data: 'lienAvatar=' + avatar + '&id=' + id + '&mdp=' + mdp + '&mdp_confirm=' + mdp_confirm + '&nom=' + nom + '&prenom=' + prenom + '&ville=' + ville,
+            success: () => {
+                popupParam();
+            },
+            error: (e) => {
+                errorInput(e.statusText);
             }
         }
     )

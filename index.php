@@ -8,11 +8,14 @@ $pdo = new Authentification;
 $connecte = FALSE;
 if ($pdo->connecte()) {
     $connecte = $pdo->connecte();
-    $sid = $_SESSION['id'];
+} else {
+    $_SESSION['id'] = null;
 }
+$sid = $_SESSION['id'];
 
 if (!isset($_REQUEST['action'])) {
-    $_REQUEST['action'] = 'accueil';
+    header('Location:index.php?action=accueil');
+    exit();
 }
 
 if ($_REQUEST['action'] === 'ajax') {
@@ -68,6 +71,26 @@ switch ($action) {
 
         $publications = $pdo->getLesPostesUtilisateur($id, 3);
         $lesCommentaires = $pdo->getLesCommentairesUtilisateur($id, 5);
+
+        $allowAmis = TRUE;
+        $allowBio = TRUE;
+        $allowSujet = TRUE;
+        $allowCom = TRUE;
+
+        if ($sid !== $idUtilisateur) {
+            if (!$pdo->autorisationParametre($idUtilisateur, "amis")) {
+                $allowAmis = FALSE;
+            }
+            if (!$pdo->autorisationParametre($idUtilisateur, "biographie")) {
+                $allowBio = FALSE;
+            }
+            if (!$pdo->autorisationParametre($idUtilisateur, "sujet")) {
+                $allowSujet = FALSE;
+            }
+            if (!$pdo->autorisationParametre($idUtilisateur, "commentaire")) {
+                $allowCom = FALSE;
+            }
+        }
         require_once 'public' . DIRECTORY_SEPARATOR . 'profil.php';
     break;
 
@@ -101,18 +124,35 @@ switch ($action) {
             exit();
         }
 
+        echo <<<HTML
+        <div class="container mt-6">
+        <h1 class="title is-5">Les amis de {$idUtilisateur}</h1>
+HTML;
         foreach ($lesAmis as $ami) {
             $idAmi = htmlentities($ami['idAmi']);
             $avatar = htmlentities($ami['avatar']);
             $nom = htmlentities($ami['nom']);
             $prenom = htmlentities($ami['prenom']);
             require $root . 'public' . DIRECTORY_SEPARATOR . 'amis.php';
-        } 
+        }
+        echo "</div>";
     break;
 
     case 'messagerie':
         $lesAmis = $pdo->getLesAmis($sid);
         require_once $root . 'public' . DIRECTORY_SEPARATOR . 'messagerie.php';
+    break;
+
+    case 'preference':
+        $utilisateur = $pdo->getUtilisateur($sid)[0];
+        $id = htmlentities($utilisateur['id']);
+        $avatar = htmlentities($utilisateur['avatar']);
+        $nom = htmlentities($utilisateur['nom']);
+        $prenom = htmlentities($utilisateur['prenom']);
+        $mdp = htmlentities($utilisateur['mdp']);
+        $ville = htmlentities($utilisateur['ville']);
+
+        require_once $root . 'public' . DIRECTORY_SEPARATOR . 'preference.php';
     break;
 }
 

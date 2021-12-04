@@ -24,29 +24,36 @@
                     <?php endif ?>
                 <?php endif ?>
                 
-                <a href="index.php?action=voirLesAmis&id=<?= $id ?>" class="card-footer-item">Amis</a>
+                <?php if ($allowAmis): ?>
+                    <a href="index.php?action=voirLesAmis&id=<?= $id ?>" class="card-footer-item">Amis</a>
+                <?php endif ?>
             </div>
 
-            <p class="title is-5 mb-2 mt-6">A propos de moi</p>
-            <div class="card bg-green">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque voluptatem amet voluptatum maxime natus esse, distinctio laborum autem iure consequuntur consectetur expedita reprehenderit, laboriosam vel tempore similique magnam labore aut!
-            </div>
+            <?php if ($allowBio): ?>
+                <p class="title is-5 mb-2 mt-6">A propos de moi</p>
+                <div class="card bg-green">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque voluptatem amet voluptatum maxime natus esse, distinctio laborum autem iure consequuntur consectetur expedita reprehenderit, laboriosam vel tempore similique magnam labore aut!
+                </div>
+            <?php endif ?>
 
-            <div class="is-flex is-justify-content-space-between bigSpace">
-                <p class="title is-5">Sujet(s) récent</p>
-                <a href="index.php?action=sujetsUtilisateur&id=<?= $id ?>" class="is-underlined">Tous montrer</a>
-            </div>
+            <?php if ($allowSujet): ?>
+                <div class="is-flex is-justify-content-space-between bigSpace">
+                    <p class="title is-5">Sujet(s) récent</p>
+                    <a href="index.php?action=sujetsUtilisateur&id=<?= $id ?>" class="is-underlined">Tous montrer</a>
+                </div>
+                <?php require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'poste.php' ?>
+            <?php endif ?>
 
-            <?php require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'poste.php' ?>
+            <?php if ($allowCom): ?>
+                <div class="is-flex is-justify-content-space-between bigSpace">
+                    <p class="title is-5">Commentaire(s) récent</p>
+                    <a href="index.php?action=commentairesUtilisateur&id=<?= $id ?>" class="is-underlined">Tous montrer</a>
+                </div>
 
-            <div class="is-flex is-justify-content-space-between bigSpace">
-                <p class="title is-5">Commentaire(s) récent</p>
-                <a href="index.php?action=commentairesUtilisateur&id=<?= $id ?>" class="is-underlined">Tous montrer</a>
-            </div>
-
-            <div class="commentaireUtilisateurRecent">
-                <?php require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'lesCommentaires.php' ?>
-            </div>
+                <div class="commentaireUtilisateurRecent">
+                    <?php require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'lesCommentaires.php' ?>
+                </div>
+            <?php endif ?>
         </div>
     </div>
 </div>

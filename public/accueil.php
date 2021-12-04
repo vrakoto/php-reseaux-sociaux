@@ -1,5 +1,3 @@
-<h1>Bienvenu <?= $sid ?? '' ?> !</h1>
-
 <div class="container">
     <?php if ($connecte) : ?>
         <div class="has-text-centered mt-5">
