@@ -12,14 +12,35 @@ function generateString(int $length): string
     return substr(str_shuffle(MD5(microtime())), 0, $length);
 }
 
-function fieldInput(string $id, string $titre, string $typeInput, string $property = NULL): string
+function fieldInput(string $typeInput, string $id, string $iconClass, string $placeHolder, string $property = NULL): string
 {
-   return <<<HTML
-   <div class="field">
-        <label for="$id">$titre</label>
-        <div class="control">
-            <input class="input" type="$typeInput" id="$id" $property>
-        </div>
+    return <<<HTML
+    <div class="field mb-4">
+        <span class="tag">$placeHolder</span>
+        <p class="control has-icons-left has-icons-right">
+            <input type="$typeInput" class="input" id="$id" placeholder="$placeHolder" required $property>
+            <span class="icon is-small is-left">
+                <i class="$iconClass"></i>
+            </span>
+        </p>
     </div>
 HTML;
 }
+
+function fieldSelect(string $id, string $options): string
+{
+    
+    return <<<HTML
+    <div class="field">
+        <p class="control has-icons-left">
+            <select id="$id" class="input">
+                $options
+            </select>
+            <span class="icon is-small is-left">
+                <i class="fas fa-venus-mars"></i>
+            </span>
+        </p>
+    </div>
+HTML;
+}
+

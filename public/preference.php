@@ -77,14 +77,12 @@
                     <input class="input" type="text" id="lienAvatar" placeholder="http(s)://www....." value="<?= $avatar ?>">
                 </figure>
             </div>
-
-            <?= fieldInput("identifiant", "Identifiant", "text", "value='$id' placeholder='Identifiant'") ?>
-            <?= fieldInput("mdp", "Changer mot de passe", "password", "placeholder='Mot de passe à changer'") ?>
-            <?= fieldInput("mdp_confirm", "Confirmer mot de passe", "password", "placeholder='Confirmer mot de passe'") ?>
-            <?= fieldInput("nom", "Nom", "text", "value='$nom' placeholder='Nom'") ?>
-            <?= fieldInput("prenom", "Prenom", "text", "value='$prenom' placeholder='Prenom'") ?>
-            <?= fieldInput("ville", "Ville", "text", "value='$ville' placeholder='Ville'") ?>
-
+            
+            <?= fieldInput('password', 'mdp', 'fas fa-key', 'Changer mot de passe') ?>
+            <?= fieldInput('password', 'mdp_confirm', 'fas fa-key', 'Confirmer mot de passe') ?>
+            <?= fieldInput('text', 'nom', 'fas fa-user', 'Nom', "value=$nom") ?>
+            <?= fieldInput('text', 'prenom', 'fas fa-user', 'Prenom', "value=$prenom") ?>
+            <?= fieldInput('text', 'ville', 'fas fa-city', 'Ville', "value=$ville") ?>
             <br>
             
             <button class="button is-primary mt-3" onclick="compteParams()">Sauvegarder</button>

@@ -1,3 +1,11 @@
+// Message INPUT
+const messageStatic = $('.messageStatic');
+
+// Message POPUP
+const antiBackground = $('#popupScreen');
+const messagePopup = $('#popupContent');
+
+
 $(document).ready(function () {
     const dropdown = document.querySelector('.dropdown');
     if (dropdown) { // Si Dropdown existe
@@ -16,31 +24,25 @@ $(document).ready(function () {
     getLesPostes();
 });
 
-// Message INPUT
-const msgInput_container = $('.error-message');
-
-// Message POPUP
-const msgPopup_container = $('#modal-msg');
-const msgPopup = $('#modal-content');
 
 function errorInput(e)
 {
-    msgInput_container.empty();
-    msgInput_container.css({display: "block"});
-    msgInput_container.append("<p class='error-text'>" + e + "</p>");
+    messageStatic.empty();
+    messageStatic.css({display: "inline-block"})
+    messageStatic.append("<p>" + e + "</p>");
 }
 
 function errorPopup(e)
 {
-    msgPopup.empty();
-    $('#modal-content p').empty();
-    msgPopup.append("<p>" + e + "</p>");
-    msgPopup_container.css({display: "block"});
+    messagePopup.empty();
+    $('#popupContent p').empty();
+    messagePopup.append("<p>" + e + "</p>");
+    antiBackground.css({display: "block"});
 
     $(window).click((e) => {
-        if (e.target == msgPopup_container[0]) {
+        if (e.target == antiBackground[0]) {
             e.stopPropagation();
-            msgPopup_container.css({display: "none"});
+            antiBackground.css({display: "none"});
         }
     })
 }
@@ -71,13 +73,13 @@ function rechercherPoste(type, valeur)
 
 function verificationInscription()
 {
-    let identifiant = $('#id').val();
-    let nom = $('#nom').val();
-    let prenom = $('#prenom').val();
-    let mdp = $('#mdp').val();
-    let sexe = $('#sexe').val();
-    let dateNaissance = $('#dateNaissance').val();
-    let ville = $('#ville').val();
+    const identifiant = $('#id').val();
+    const nom = $('#nom').val();
+    const prenom = $('#prenom').val();
+    const mdp = $('#mdp').val();
+    const sexe = $('#sexe').val();
+    const dateNaissance = $('#dateNaissance').val();
+    const ville = $('#ville').val();
 
     $.ajax
     (
@@ -85,17 +87,17 @@ function verificationInscription()
             type: 'post',
             url: 'index.php?action=ajax&c=inscription',
             data: 'identifiant=' + identifiant + '&nom=' + nom + '&prenom=' + prenom + '&mdp=' + mdp + '&sexe=' + sexe + '&dateNaissance=' + dateNaissance + '&ville=' + ville,
-            success: (e) => {
+            success: () => {
                 window.location.href = "index.php?action=pageConnexion";
             },
             error: (e) => {
-                msgInput_container.css({display: "block"});
-                msgInput_container.append("<p class='error-text'>" + e.statusText + "</p>");
-                $(".error-text").not(":first").empty();
+                messageStatic.css({display: "block"});
+                messageStatic.append("<p>" + e.statusText + "</p>");
+                $(".messageStatic p").not(":first").empty();
                 const erreurs = JSON.parse(e.responseText);
                 for (const champ in erreurs) {
                     const erreur = erreurs[champ];
-                    msgInput_container.append("<p class='error-text'>" + erreur + "</p>");
+                    messageStatic.append("<p>" + erreur + "</p>");
                 }
             }
         }
@@ -112,7 +114,7 @@ function verificationConnexion()
             type: 'post',
             url: 'index.php?action=ajax&c=connexion',
             data: 'id=' + id + '&mdp=' + mdp,
-            success: (e) => {
+            success: () => {
                 window.location.href = "index.php?action=accueil";
             },
             error: (e) => {
@@ -311,15 +313,15 @@ function getLesJaimes(idPoste)
             data: 'idPoste=' + idPoste,
             success: (e) => {
                 if (e !== 'null') {
-                    msgPopup.empty();
-                    msgPopup.css({backgroundColor: "unset", border: "2px solid #000"});
-                    msgPopup.append(e);
-                    msgPopup_container.css({display: "block"});
+                    messagePopup.empty();
+                    messagePopup.css({backgroundColor: "unset", border: "2px solid #000"});
+                    messagePopup.append(e);
+                    antiBackground.css({display: "block"});
 
-                    msgPopup_container.click((e) => {
-                        if (e.target === msgPopup_container[0]) {
-                            msgPopup.css({backgroundColor: "#f8d7da", border: "unset"});
-                            msgPopup_container.css({display: "none"});
+                    antiBackground.click((e) => {
+                        if (e.target === antiBackground[0]) {
+                            messagePopup.css({backgroundColor: "#f8d7da", border: "unset"});
+                            antiBackground.css({display: "none"});
                         }
                     });
                 }
@@ -462,7 +464,6 @@ function profilParams()
 function compteParams()
 {
     const avatar = $('#lienAvatar').val();
-    const id = $('#identifiant').val();
     const mdp = $('#mdp').val();
     const mdp_confirm = $('#mdp_confirm').val();
     const nom = $('#nom').val();
@@ -474,8 +475,8 @@ function compteParams()
         {
             type: 'post',
             url: 'index.php?action=ajax&c=parametreCompte',
-            data: 'lienAvatar=' + avatar + '&id=' + id + '&mdp=' + mdp + '&mdp_confirm=' + mdp_confirm + '&nom=' + nom + '&prenom=' + prenom + '&ville=' + ville,
-            success: () => {
+            data: 'lienAvatar=' + avatar + '&mdp=' + mdp + '&mdp_confirm=' + mdp_confirm + '&nom=' + nom + '&prenom=' + prenom + '&ville=' + ville,
+            success: (e) => {
                 popupParam();
             },
             error: (e) => {

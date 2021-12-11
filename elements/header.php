@@ -28,14 +28,10 @@
 
         <div class="navbar-menu">
             <div class="navbar-start">
-                <a href="index.php?action=accueil" class="navbar-item">
-                    Accueil
-                </a>
+                <a href="index.php?action=accueil" class="navbar-item">Accueil</a>
 
                 <?php if ($connecte): ?>
-                    <a href="index.php?action=consulterProfil&id=<?= $sid ?>" class="navbar-item">
-                        Mon Profil
-                    </a>
+                    <a href="index.php?action=consulterProfil&id=<?= $sid ?>" class="navbar-item">Mon Profil</a>
                 <?php endif ?>
             </div>
 
@@ -65,10 +61,7 @@
                 <div class="navbar-item">
                     <div class="buttons">
                         <?php if (!$connecte) : ?>
-                            <a href="index.php?action=pageInscription" class="button is-primary">
-                                <strong>Inscription</strong>
-                            </a>
-                            <a href="index.php?action=pageConnexion" class="button is-light">
+                            <a href="index.php?action=pageConnexion" class="button is-primary">
                                 Connexion
                             </a>
                         <?php else : ?>
@@ -114,10 +107,10 @@
         </div>
     </nav>
 
-    <div class="has-text-centered">
-        <div class="error-message" style="display: none;"></div>
+    <div class="container has-text-centered">
+        <div class="messageStatic"></div>
     </div>
 
-    <div id="modal-msg">
-        <div id="modal-content"></div>
+    <div id="popupScreen">
+        <div id="popupContent"></div>
     </div>

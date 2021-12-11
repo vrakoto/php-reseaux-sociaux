@@ -1,12 +1,12 @@
 body {
-    /* background: #f7f7f7; */
+    background: #f7f7f7;
 }
 
 :root {
     --redAlert: #f8d7da;
 }
 
-#modal-msg {
+#popupScreen {
     display: none;
     position: fixed;
     z-index: 1;
@@ -20,8 +20,7 @@ body {
     background-color: rgba(0, 0, 0, 0.4);
 }
 
-/* Modal Content */
-#modal-content {
+#popupContent {
     position: relative;
     color: #721c24;
     background-color: var(--redAlert);
@@ -29,4 +28,20 @@ body {
     margin: auto;
     width: 500px;
     text-align: center;
+}
+
+
+.messageStatic {
+    display: none;
+    background-color: #fce4e4;
+    border: 1px solid #fcc2c3;
+    padding: 20px 30px;
+    text-align: center;
+}
+  
+.messageStatic p {
+    color: #cc0033;
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 20px;
 }

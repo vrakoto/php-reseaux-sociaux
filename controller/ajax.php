@@ -64,14 +64,13 @@ switch ($action) {
         }
 
         $pdo->inscrire($id, $nom, $prenom, $mdp, $sexe, $dateNaissance, $ville);
-        $pdo->ajouterListeAmi();
-        $pdo->creerParametre();
+        $pdo->creerParametre($id);
     break;
 
     case 'connexion':
         $id = htmlentities($_POST['id']);
         $mdp = htmlentities($_POST['mdp']);
-        if (!$pdo->verifierConnexion($id, $mdp)) {
+        if (!$pdo->verifierIdentifiant($id) || !password_verify($mdp, $pdo->getUtilisateur($id)[0]['mdp'])) {
             die(header("HTTP/1.0 404 Authentification invalide"));
         }
         $_SESSION['id'] = $id;
@@ -256,9 +255,8 @@ HTML;
     break;
 
     case 'parametreCompte':
-        if (isset($_POST['id'], $_POST['mdp'], $_POST['mdp_confirm'], $_POST['nom'], $_POST['prenom'], $_POST['ville'])) {
+        if (isset($_POST['mdp'], $_POST['mdp_confirm'], $_POST['nom'], $_POST['prenom'], $_POST['ville'])) {
             $avatar = htmlentities($_POST['lienAvatar']);
-            $id = htmlentities($_POST['id']);
             $mdp = htmlentities($_POST['mdp']);
             $mdp_confirm = htmlentities($_POST['mdp_confirm']);
             $nom = htmlentities($_POST['nom']);
@@ -267,10 +265,6 @@ HTML;
 
             if (strlen($avatar) < 10) {
                 die(header("HTTP/1.0 404 Lien de l'avatar incorrect"));
-            }
-
-            if (strlen($id) < 2 || $id === $pdo->verifierIdentifiant($id)) {
-                die(header("HTTP/1.0 404 Identifiant trop court ou déjà prit"));
             }
 
             if (!empty($mdp)) {
@@ -297,7 +291,9 @@ HTML;
                 die(header("HTTP/1.0 404 Nom de la ville trop courte"));
             }
 
-            $pdo->updateCompte($avatar, $id, $mdp, $nom, $prenom, ucfirst($ville));
+            $mdpHash = password_hash($mdp, PASSWORD_DEFAULT, ['cost' => 12]);
+
+            $pdo->updateCompte($avatar, $sid, $mdpHash, $nom, $prenom, ucfirst($ville));
         }
     break;
 }

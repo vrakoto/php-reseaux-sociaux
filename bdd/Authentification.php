@@ -281,17 +281,6 @@ class Authentification {
     }
 
 
-    function ajouterListeAmi(): PDOStatement
-    {
-        $req = "INSERT INTO amis (idUtilisateur) VALUES (:idUtilisateur)";
-        $p = $this->pdo->prepare($req);
-        $p->execute([
-            'idUtilisateur' => $_SESSION['id']
-        ]);
-
-        return $p;
-    }
-
     function ajouterAmi(string $idAmi1, string $idAmi2): PDOStatement
     {
         $req = "INSERT INTO amis (idAmi, idUtilisateur) VALUES (:idAmi, :idUtilisateur)";
@@ -374,18 +363,18 @@ class Authentification {
 
 
 
-    function creerParametre(): PDOStatement
+    function creerParametre(string $id): PDOStatement
     {
         $req = "INSERT INTO parametre (idUtilisateur) VALUES (:idUtilisateur)";
         $p = $this->pdo->prepare($req);
         $p->execute([
-            'idUtilisateur' => $_SESSION['id']
+            'idUtilisateur' => $id
         ]);
 
         return $p;
     }
 
-    function updateProfil(string $avatar, string $amisParam, string $bioParam, string $sujetParam, string $commentaireParam): PDOStatement
+    function updateProfil(string $amisParam, string $bioParam, string $sujetParam, string $commentaireParam): PDOStatement
     {
         $req = "UPDATE parametre SET amis = :amis, biographie = :biographie, sujet = :sujet, commentaire = :commentaire WHERE idUtilisateur = :idUtilisateur";
         $p = $this->pdo->prepare($req);
@@ -400,13 +389,13 @@ class Authentification {
         return $p;
     }
 
-    function updateCompte(string $avatar, string $nouveauIdentifiant, string $mdp, string $nom, string $prenom, string $ville): PDOStatement
+    function updateCompte(string $avatar, string $id, string $mdp, string $nom, string $prenom, string $ville): PDOStatement
     {
         $req = "UPDATE utilisateur SET avatar = :avatar, id = :id, mdp = :mdp, nom = :nom, prenom = :prenom, ville = :ville WHERE id = :id";
         $p = $this->pdo->prepare($req);
         $p->execute([
             'avatar' => $avatar,
-            'id' => $nouveauIdentifiant,
+            'id' => $id,
             'mdp' => $mdp,
             'nom' => $nom,
             'prenom' => $prenom,
