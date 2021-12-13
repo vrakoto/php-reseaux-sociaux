@@ -317,11 +317,20 @@ class Authentification {
         return $p;
     }
 
-    function getLesAmis(string $idUtilisateur): array
+    function getLesAmis(string $idUtilisateur, bool $relyUsersSetting = FALSE): array
     {
-        $req = "SELECT idAmi, avatar, nom, prenom FROM amis
-                JOIN utilisateur on amis.idAmi = utilisateur.id
-                WHERE idUtilisateur = :idUtilisateur";
+        if ($relyUsersSetting === TRUE) {
+            $req = "SELECT idAmi, avatar, nom, prenom FROM amis
+                    JOIN utilisateur on amis.idAmi = utilisateur.id
+                    JOIN parametre on parametre.idUtilisateur = utilisateur.id
+                    WHERE amis.idUtilisateur = :idUtilisateur AND parametre.amis = 'TOUS'";
+        } else {
+            // Recupère tous les amis de l'utilisateur peu importe leur paramètre
+            $req = "SELECT idAmi, avatar, nom, prenom FROM amis
+                    JOIN utilisateur on amis.idAmi = utilisateur.id
+                    WHERE amis.idUtilisateur = :idUtilisateur";
+        }
+
         $p = $this->pdo->prepare($req);
         $p->execute([
             'idUtilisateur' => $idUtilisateur

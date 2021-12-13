@@ -1,4 +1,4 @@
-.container {
+.messagerie {
     height: 750px;
     width: 750px;
 }
@@ -45,10 +45,6 @@
     border-radius: 5px;
 }
 
-
-#chat-header {
-    color: #000;
-}
 
 #laConversation {
     flex-flow: column nowrap;

@@ -17,6 +17,11 @@
     <?php if ($estVisible || $sid === $idAuteur) : ?>
         <div class="poste-container">
             <div class="card mt-5">
+                
+                <?php if ($sid === $idAuteur && !$estVisible): ?>
+                    <a class="has-text-danger is-underlined" href="index.php?action=preference">Vos postes sont privées.</a>
+                <?php endif ?>
+
                 <div class="card-content">
                     <div class="media">
                         <div class="media-left">

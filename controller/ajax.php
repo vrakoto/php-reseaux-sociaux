@@ -63,7 +63,8 @@ switch ($action) {
             die(json_encode($erreurs));
         }
 
-        $pdo->inscrire($id, $nom, $prenom, $mdp, $sexe, $dateNaissance, $ville);
+        $mdpHash = password_hash($mdp, PASSWORD_DEFAULT, ['cost' => 12]);
+        $pdo->inscrire($id, $nom, $prenom, $mdpHash, $sexe, $dateNaissance, $ville);
         $pdo->creerParametre($id);
     break;
 
@@ -193,7 +194,6 @@ switch ($action) {
         }
 
         $laConversation = $pdo->getLaConversation($idAmi);
-        echo "<div class='title is-4' id='chat-header'>Discussion avec <span id='idAmi'></span></div>";
         foreach ($laConversation as $conversation) {
             $idAmi = htmlentities($conversation['idAmi']);
             $avatar = htmlentities($conversation['avatar']);

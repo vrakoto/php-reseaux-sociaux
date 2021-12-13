@@ -112,11 +112,16 @@ switch ($action) {
 
     case 'voirLesAmis':
         $idUtilisateur = htmlentities($_REQUEST['id']);
-        $lesAmis = $pdo->getLesAmis($idUtilisateur);
 
         if (empty($pdo->getUtilisateur($idUtilisateur))) {
             echo "Utilisateur inexistant";
             exit();
+        }
+
+        if ($sid === $idUtilisateur) {
+            $lesAmis = $pdo->getLesAmis($idUtilisateur);
+        } else {
+            $lesAmis = $pdo->getLesAmis($idUtilisateur, TRUE);
         }
 
         if (empty($lesAmis)) {

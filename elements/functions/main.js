@@ -368,8 +368,10 @@ function rechercherAmiConversation()
 }
 
 let idAmiSelectionner = '';
-function getLaConversation(idAmi)
+function getLaConversation(idAmi, currentItem)
 {
+    $(currentItem).css({boxShadow: "10px 10px 10px 10px #333"});
+    $('.leContact').not(currentItem).css({boxShadow: "unset"});
     const laConversation = $('#laConversation');
     $.ajax
     (

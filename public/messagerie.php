@@ -1,6 +1,6 @@
 <?= includeCSS('messagerie') ?>
 
-<div class="container mt-6">
+<div class="container messagerie mt-6">
     <div class="is-pulled-left" id="listeContact">
         <input type="text" class="input" id="rechercheAmiConv" placeholder="Rechercher un utilisateur" onkeyup="rechercherAmiConversation()">
 
@@ -9,7 +9,7 @@
             $idAmi = htmlentities($ami['idAmi']);
             $avatar = htmlentities($ami['avatar']);
             ?>
-            <div class="leContact is-flex is-align-items-center" onclick="getLaConversation('<?= $idAmi ?>')">
+            <div class="leContact is-flex is-align-items-center" onclick="getLaConversation('<?= $idAmi ?>', this)">
                 <img src="<?= $avatar ?>" alt="Image du contact">
                 <p class="leContact-nom"><?= $idAmi ?></p>
             </div>

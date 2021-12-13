@@ -12,6 +12,8 @@
 </head>
 
 <body>
+    
+    <?php //echo '<pre>'; print_r($_SERVER); ?>
 
     <nav class="navbar is-fixed-top fullhd is-dark" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
@@ -28,11 +30,13 @@
 
         <div class="navbar-menu">
             <div class="navbar-start">
-                <a href="index.php?action=accueil" class="navbar-item">Accueil</a>
+
+                <?= nav_item('index.php?action=accueil', 'Accueil') ?>
 
                 <?php if ($connecte): ?>
-                    <a href="index.php?action=consulterProfil&id=<?= $sid ?>" class="navbar-item">Mon Profil</a>
+                    <?= nav_item("index.php?action=consulterProfil&id=$sid", 'Mon Profil') ?>
                 <?php endif ?>
+
             </div>
 
             <?php if (strpos($_SERVER['REQUEST_URI'], "accueil")) : ?>
