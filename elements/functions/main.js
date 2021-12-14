@@ -58,7 +58,7 @@ function rechercherPoste(type, valeur)
     (
         {
             type: 'get',
-            url: 'index.php?action=ajax&c=rechercherPoste',
+            url: 'index.php?action=rechercherPoste',
             data: 'type=' + recherche + '&valeur=' + valeur,
             success: (e) => {
                 $('#postes').empty();
@@ -85,7 +85,7 @@ function verificationInscription()
     (
         {
             type: 'post',
-            url: 'index.php?action=ajax&c=inscription',
+            url: 'index.php?action=inscription',
             data: 'identifiant=' + identifiant + '&nom=' + nom + '&prenom=' + prenom + '&mdp=' + mdp + '&sexe=' + sexe + '&dateNaissance=' + dateNaissance + '&ville=' + ville,
             success: () => {
                 window.location.href = "index.php?action=pageConnexion";
@@ -112,7 +112,7 @@ function verificationConnexion()
     (
         {
             type: 'post',
-            url: 'index.php?action=ajax&c=connexion',
+            url: 'index.php?action=connexion',
             data: 'id=' + id + '&mdp=' + mdp,
             success: () => {
                 window.location.href = "index.php?action=accueil";
@@ -131,7 +131,7 @@ function getLesPostes()
     (
         {
             type: 'get',
-            url: 'index.php?action=ajax&c=getLesPostes',
+            url: 'index.php?action=getLesPostes',
             success: (e) => {
                 $('#postes').append(e);
             },
@@ -148,7 +148,7 @@ function getLePoste(idPoste, lePoste)
     (
         {
             type: 'get',
-            url: 'index.php?action=ajax&c=getLePoste',
+            url: 'index.php?action=getLePoste',
             data: 'idPoste=' + idPoste,
             success: (e) => {
                 lePoste.replaceWith(e);
@@ -167,7 +167,7 @@ function publierPoste()
     (
         {
             type: 'post',
-            url: 'index.php?action=ajax&c=publierPoste',
+            url: 'controller/utilisateur.php?u=publierPoste',
             data: 'posteMessage=' + posteMessage,
             success: () => {
                 $('#posteMessage').val('');
@@ -188,7 +188,7 @@ function aimerPoste(idPoste, lePoste)
     (
         {
             type: 'post',
-            url: 'index.php?action=ajax&c=aimerPoste',
+            url: 'controller/utilisateur.php?u=aimerPoste',
             data: 'idPoste=' + idPoste,
             success: (e) => {
                 getLePoste(idPoste, parent);
@@ -207,7 +207,7 @@ function supprimerPoste(idPoste, lePoste)
     (
         {
             type: 'post',
-            url: 'index.php?action=ajax&c=supprimerPoste',
+            url: 'controller/utilisateur.php?u=supprimerPoste',
             data: 'idPoste=' + idPoste,
             success: (e) => {
                 getLePoste(idPoste, parent);
@@ -232,7 +232,7 @@ function getLesCommentaires(idPoste, lePoste)
     (
         {
             type: 'get',
-            url: 'index.php?action=ajax&c=getLesCommentaires',
+            url: 'index.php?action=getLesCommentaires',
             data: 'idPoste=' + idPoste,
             success: (e) => {
                 divCommentaires.empty();
@@ -261,7 +261,7 @@ function publierCommentaire(idPoste, commentaire)
     (
         {
             type: 'post',
-            url: 'index.php?action=ajax&c=publierCommentaire',
+            url: 'controller/utilisateur.php?u=publierCommentaire',
             data: 'idPoste=' + idPoste + '&commentaire=' + message,
             success: (e) => {
                 parent.find('#nbCommentaire').text(e);
@@ -284,7 +284,7 @@ function supprimerCommentaire(idPoste, idCommentaire, lePoste)
     (
         {
             type: 'post',
-            url: 'index.php?action=ajax&c=supprimerCommentaire',
+            url: 'controller/utilisateur.php?u=supprimerCommentaire',
             data: 'idPoste=' + idPoste + '&idCommentaire=' + idCommentaire,
             success: (e) => {
                 parent.find('#nbCommentaire').text(e);
@@ -309,7 +309,7 @@ function getLesJaimes(idPoste)
     (
         {
             type: 'get',
-            url: 'index.php?action=ajax&c=getLesJaimes',
+            url: 'index.php?action=getLesJaimes',
             data: 'idPoste=' + idPoste,
             success: (e) => {
                 if (e !== 'null') {
@@ -340,7 +340,7 @@ function retirerJaimePoste(idPoste, lePoste)
     (
         {
             type: 'post',
-            url: 'index.php?action=ajax&c=retirerJaimePoste',
+            url: 'controller/utilisateur.php?u=retirerJaimePoste',
             data: 'idPoste=' + idPoste,
             success: (e) => {
                 getLePoste(idPoste, parent);
@@ -377,7 +377,7 @@ function getLaConversation(idAmi, currentItem)
     (
         {
             type: 'get',
-            url: 'index.php?action=ajax&c=getLaConversation',
+            url: 'controller/utilisateur.php?u=getLaConversation',
             data: 'idAmi=' + idAmi,
             success: (e) => {
                 idAmiSelectionner = idAmi;
@@ -406,7 +406,7 @@ function envoyerMessage()
     (
         {
             type: 'post',
-            url: 'index.php?action=ajax&c=envoyerMessage',
+            url: 'controller/utilisateur.php?u=envoyerMessage',
             data: 'idAmi=' + idAmiSelectionner + '&message=' + message.val(),
             success: (e) => {
                 message.val('');
@@ -449,7 +449,7 @@ function profilParams()
     (
         {
             type: 'post',
-            url: 'index.php?action=ajax&c=parametreProfil',
+            url: 'controller/utilisateur.php?u=parametreProfil',
             data: 'amis=' + amis + '&bio=' + bio + '&sujet=' + sujet + '&commentaire=' + commentaire,
             success: () => {
                 popupParam();
@@ -476,7 +476,7 @@ function compteParams()
     (
         {
             type: 'post',
-            url: 'index.php?action=ajax&c=parametreCompte',
+            url: 'controller/utilisateur.php?u=parametreCompte',
             data: 'lienAvatar=' + avatar + '&mdp=' + mdp + '&mdp_confirm=' + mdp_confirm + '&nom=' + nom + '&prenom=' + prenom + '&ville=' + ville,
             success: (e) => {
                 popupParam();

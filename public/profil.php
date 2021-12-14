@@ -18,9 +18,9 @@
             <div class="is-flex mb-5">
                 <?php if ($pasMonProfil): ?>
                     <?php if (!$pdo->estMonAmi($id)): ?>
-                        <a href="index.php?action=ajax&c=ajouterAmi&id=<?= $id ?>" class="card-footer-item">Ajouter en Ami</a>
+                        <a href="controller/utilisateur.php?u=ajouterAmi&id=<?= $id ?>" class="card-footer-item">Ajouter en Ami</a>
                     <?php else: ?>
-                        <a href="index.php?action=ajax&c=retirerAmi&id=<?= $id ?>" class="card-footer-item">Retirer Ami</a>
+                        <a href="controller/utilisateur.php?u=retirerAmi&id=<?= $id ?>" class="card-footer-item">Retirer Ami</a>
                     <?php endif ?>
                 <?php endif ?>
                 

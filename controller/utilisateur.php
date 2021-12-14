@@ -1,99 +1,12 @@
 <?php
 $root = dirname(__DIR__) . DIRECTORY_SEPARATOR;
-$action = $_REQUEST['c'];
+require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'enteteRouter.php';
+
+$action = $_REQUEST['u'];
 switch ($action) {
-    case 'rechercherPoste':
-        $type = htmlentities($_GET['type']); 
-        $laRecherche = htmlentities($_GET['valeur']);
-        $publications = $pdo->rechercherPoste($type, $laRecherche);
-        
-        if (count($publications) > 0) {
-            require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'poste.php';
-        } else {
-            echo "<div class='title is-3 mt-6 has-text-centered'>Aucun résultat pour \"$laRecherche\".</div>";
-        }
-    break;
-
-    case 'inscription':
-        $id = htmlentities($_POST['identifiant']);
-        $nom = htmlentities($_POST['nom']);
-        $prenom = htmlentities($_POST['prenom']);
-        $mdp = htmlentities($_POST['mdp']);
-        $sexe = htmlentities($_POST['sexe']);
-        $dateNaissance = htmlentities($_POST['dateNaissance']);
-        $ville = htmlentities($_POST['ville']);
-
-        $erreurs = [];
-
-        if ($pdo->verifierIdentifiant($id)) {
-            $erreurs['id'] = 'Identifiant déjà prit';
-        }
-
-        if (strlen($id) < 2) {
-            $erreurs['id'] = 'Identifiant trop court';
-        }
-
-        if (strlen($nom) < 2) {
-            $erreurs['nom'] = 'Nom trop court';
-        }
-
-        if (strlen($prenom) < 2) {
-            $erreurs['prenom'] = 'Prénom trop court';
-        }
-
-        if (strlen($mdp) < 2) {
-            $erreurs['mdp'] = 'Mot de passe trop court';
-        }
-
-        if ($sexe !== 'H' && $sexe !== 'F') {
-            $erreurs['sexe'] = 'Sexe invalide';
-        }
-
-        $currentDate = date("Y-m-d");
-        if ($dateNaissance === '' || $dateNaissance > $currentDate) {
-            $erreurs['dateNaissance'] = 'Date de naissance incorrect';
-        }
-
-        if (strlen($ville) < 2) {
-            $erreurs['ville'] = 'Ville trop courte';
-        }
-
-        if (!empty($erreurs)) {
-            header("HTTP/1.0 400 Le formulaire est incorrect :");
-            die(json_encode($erreurs));
-        }
-
-        $mdpHash = password_hash($mdp, PASSWORD_DEFAULT, ['cost' => 12]);
-        $pdo->inscrire($id, $nom, $prenom, $mdpHash, $sexe, $dateNaissance, $ville);
-        $pdo->creerParametre($id);
-    break;
-
-    case 'connexion':
-        $id = htmlentities($_POST['id']);
-        $mdp = htmlentities($_POST['mdp']);
-        if (!$pdo->verifierIdentifiant($id) || !password_verify($mdp, $pdo->getUtilisateur($id)[0]['mdp'])) {
-            die(header("HTTP/1.0 404 Authentification invalide"));
-        }
-        $_SESSION['id'] = $id;
-    break;
-
     case 'deconnexion':
         unset($_SESSION['id']);
-        header('Location:index.php?action=accueil');
-        exit();
-    break;
-
-
-
-    case 'getLesPostes':
-        $publications = $pdo->getLesPostes();
-        require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'poste.php';
-    break;
-
-    case 'getLePoste':
-        $idPoste = htmlentities($_GET['idPoste']);
-        $publications = $pdo->getLePoste($idPoste);
-        require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'poste.php';
+        header('Location:../index.php?action=accueil');
     break;
 
     case 'publierPoste':
@@ -117,15 +30,6 @@ switch ($action) {
         $pdo->supprimerPoste($idPoste);
     break;
 
-
-
-    case 'getLesCommentaires':
-        $idPoste = htmlentities($_GET['idPoste']);
-        $lesCommentaires = $pdo->getLesCommentaires($idPoste);
-        if (count($lesCommentaires) > 0) {
-            require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'lesCommentaires.php';
-        }
-    break;
 
     case 'publierCommentaire':
         $idCommentaire = generateString(20);
@@ -151,18 +55,6 @@ switch ($action) {
         echo count($pdo->getLesCommentaires($idPoste));
     break;
 
-
-
-    case 'getLesJaimes':
-        $idPoste = htmlentities($_GET['idPoste']);
-        $lesJaimes = $pdo->getLesJaimes($idPoste);
-        if (count($lesJaimes) > 0) {
-            require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'lesJaimes.php';
-        } else {
-            echo "null";
-        }
-    break;
-    
     case 'retirerJaimePoste':
         $idPoste = htmlentities($_POST['idPoste']);
         $pdo->retirerJaimePoste($idPoste);
@@ -174,7 +66,7 @@ switch ($action) {
         $id = htmlentities($_REQUEST['id']);
         $pdo->ajouterAmi($sid, $id);
         $pdo->ajouterAmi($id, $sid);
-        header("Location:index.php?action=consulterProfil&id=" . $id);
+        header("Location:../index.php?action=consulterProfil&id=" . $id);
         exit();
     break;
 
@@ -182,7 +74,7 @@ switch ($action) {
         $id = htmlentities($_REQUEST['id']);
         $pdo->retirerAmi($sid, $id);
         $pdo->retirerAmi($id, $sid);
-        header("Location:index.php?action=consulterProfil&id=" . $id);
+        header("Location:../index.php?action=consulterProfil&id=" . $id);
         exit();
     break;
 
@@ -226,6 +118,7 @@ switch ($action) {
         </div>
 HTML;
     break;
+
 
     case 'envoyerMessage':
         $idAmi = htmlentities($_POST['idAmi']);
@@ -297,4 +190,3 @@ HTML;
         }
     break;
 }
-exit();

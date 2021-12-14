@@ -13,8 +13,6 @@
 
 <body>
     
-    <?php //echo '<pre>'; print_r($_SERVER); ?>
-
     <nav class="navbar is-fixed-top fullhd is-dark" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
             <a class="navbar-item is-size-4">
@@ -101,7 +99,7 @@
                                 </div>
                             </div>
 
-                            <a href="index.php?action=ajax&c=deconnexion" class="button is-danger">
+                            <a href="controller/utilisateur.php?u=deconnexion" class="button is-danger">
                                 Déconnexion
                             </a>
                         <?php endif ?>

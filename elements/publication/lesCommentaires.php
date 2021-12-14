@@ -1,5 +1,3 @@
-<!-- <a class="close title is-2" onclick="fermerLesCommentaires(this)">&times;</a> -->
-
 <?php foreach ($lesCommentaires as $commentaire) : ?>
     <?php
     $idCommentaire = htmlentities($commentaire['idCommentaire']);
