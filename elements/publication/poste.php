@@ -14,11 +14,11 @@
     $estVisible = $pdo->autorisationParametre($idAuteur, "sujet"); // est visible si "TOUS" ou "AMIS" (seulement les amis)
     ?>
 
-    <?php if ($estVisible || $sid === $idAuteur) : ?>
+    <?php if ($estVisible || $identifiant === $idAuteur) : ?>
         <div class="poste-container">
             <div class="card mt-5">
                 
-                <?php if ($sid === $idAuteur && !$estVisible): ?>
+                <?php if ($identifiant === $idAuteur && !$estVisible): ?>
                     <a class="has-text-danger is-underlined" href="index.php?action=preference">Vos postes sont privées.</a>
                 <?php endif ?>
 
@@ -59,7 +59,7 @@
                         <button class="card-footer-item" onclick="ouvrirCommenter(this)">Commenter</button>
                     <?php endif ?>
 
-                    <?php if ($connecte && $sid === $idAuteur) : ?>
+                    <?php if ($connecte && $identifiant === $idAuteur) : ?>
                         <button class="card-footer-item" onclick="supprimerPoste('<?= $idPoste ?>', this)">Supprimer</button>
                     <?php endif ?>
 

@@ -9,7 +9,7 @@
     $nom = htmlentities($commentaire['nom']);
     $prenom = htmlentities($commentaire['prenom']); ?>
 
-    <div class="unCommentaire card mt-5" <?php if ($connecte && $sid === $idAuteur): ?>style="border: 1px solid #00c4a7"<?php endif ?>>
+    <div class="unCommentaire card mt-5" <?php if ($connecte && $identifiant === $idAuteur): ?>style="border: 1px solid #00c4a7"<?php endif ?>>
         <div class="is-flex is-align-items-center">
             <div class="card">
                 <figure class="image is-48x48">
@@ -20,7 +20,7 @@
             <a href="index.php?action=consulterProfil&id=<?= $idAuteur ?>" target="_blank" class="is-4 is-underlined mr-5"><?= $prenom . ' ' . $nom ?></a>
             <p><?= $message ?></p>
             
-            <?php if ($connecte && $sid === $idAuteur): ?>
+            <?php if ($connecte && $identifiant === $idAuteur): ?>
                 <i class="fas fa-trash" onclick="supprimerCommentaire('<?= $idPoste ?>', '<?= $idCommentaire ?>', this)"></i>
             <?php endif ?>
         </div>

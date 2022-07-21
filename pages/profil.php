@@ -41,7 +41,7 @@
                     <p class="title is-5">Sujet(s) récent</p>
                     <a href="index.php?action=sujetsUtilisateur&id=<?= $id ?>" class="is-underlined">Tous montrer</a>
                 </div>
-                <?php require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'poste.php' ?>
+                <?php require_once ROOT . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'poste.php' ?>
             <?php endif ?>
 
             <?php if ($allowCom): ?>
@@ -51,7 +51,7 @@
                 </div>
 
                 <div class="commentaireUtilisateurRecent">
-                    <?php require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'lesCommentaires.php' ?>
+                    <?php require_once ROOT . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'lesCommentaires.php' ?>
                 </div>
             <?php endif ?>
         </div>

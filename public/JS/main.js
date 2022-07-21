@@ -1,50 +1,17 @@
 // Message INPUT
-const messageStatic = $('.messageStatic');
-
-// Message POPUP
-const antiBackground = $('#popupScreen');
-const messagePopup = $('#popupContent');
-
-
 $(document).ready(function () {
-    const dropdown = document.querySelector('.dropdown');
-    if (dropdown) { // Si Dropdown existe
-        dropdown.addEventListener('click', function(e) {
-            e.stopPropagation();
-            dropdown.classList.toggle('is-active');
-        });
-    }
-
-    // Navmenu pour mobile / tablette / petit écran
-    $(".navbar-burger").click(function () {
-        $(".navbar-burger").toggleClass("is-active");
-        $(".navbar-menu").toggleClass("is-active");
-    });
-
     getLesPostes();
 });
 
 
 function errorInput(e)
 {
-    messageStatic.empty();
-    messageStatic.css({display: "inline-block"})
-    messageStatic.append("<p>" + e + "</p>");
+    
 }
 
 function errorPopup(e)
 {
-    messagePopup.empty();
-    $('#popupContent p').empty();
-    messagePopup.append("<p>" + e + "</p>");
-    antiBackground.css({display: "block"});
-
-    $(window).click((e) => {
-        if (e.target == antiBackground[0]) {
-            e.stopPropagation();
-            antiBackground.css({display: "none"});
-        }
-    })
+    
 }
 
 function rechercherPoste(type, valeur)
@@ -436,54 +403,4 @@ function popupParam()
     $('#success').empty();
     $('#success').append("Profil mis-à-jour !");
     $('#success').css({display: "block"});
-}
-
-function profilParams()
-{
-    const amis = $('#amisParam').val();
-    const bio = $('#bioParam').val();
-    const sujet = $('#sujetParam').val();
-    const commentaire = $('#comParam').val();
-
-    $.ajax
-    (
-        {
-            type: 'post',
-            url: 'controller/utilisateur.php?u=parametreProfil',
-            data: 'amis=' + amis + '&bio=' + bio + '&sujet=' + sujet + '&commentaire=' + commentaire,
-            success: () => {
-                popupParam();
-            },
-            error: (e) => {
-                errorInput(e.statusText);
-            }
-        }
-    )
-}
-
-
-
-function compteParams()
-{
-    const avatar = $('#lienAvatar').val();
-    const mdp = $('#mdp').val();
-    const mdp_confirm = $('#mdp_confirm').val();
-    const nom = $('#nom').val();
-    const prenom = $('#prenom').val();
-    const ville = $('#ville').val();
-
-    $.ajax
-    (
-        {
-            type: 'post',
-            url: 'controller/utilisateur.php?u=parametreCompte',
-            data: 'lienAvatar=' + avatar + '&mdp=' + mdp + '&mdp_confirm=' + mdp_confirm + '&nom=' + nom + '&prenom=' + prenom + '&ville=' + ville,
-            success: (e) => {
-                popupParam();
-            },
-            error: (e) => {
-                errorInput(e.statusText);
-            }
-        }
-    )
 }

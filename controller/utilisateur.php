@@ -1,7 +1,4 @@
 <?php
-$root = dirname(__DIR__) . DIRECTORY_SEPARATOR;
-require_once $root . 'elements' . DIRECTORY_SEPARATOR . 'enteteRouter.php';
-
 $action = $_REQUEST['u'];
 switch ($action) {
     case 'deconnexion':
@@ -9,77 +6,7 @@ switch ($action) {
         header('Location:../index.php?action=accueil');
     break;
 
-    case 'publierPoste':
-        $id = substr(str_shuffle(MD5(microtime())), 0, 20);
-        $message = htmlentities($_POST['posteMessage']);
-
-        if (empty(trim($message))) {
-            die(header("HTTP/1.0 404 Poste vide"));
-        }
-        $pdo->publierPoste($id, $message);
-    break;
-    
-    case 'aimerPoste':
-        $idPoste = htmlentities($_POST['idPoste']);
-        $pdo->aimerPoste($idPoste);
-        echo count($pdo->getLesJaimes($idPoste));
-    break;
-
-    case 'supprimerPoste':
-        $idPoste = htmlentities($_POST['idPoste']);
-        $pdo->supprimerPoste($idPoste);
-    break;
-
-
-    case 'publierCommentaire':
-        $idCommentaire = generateString(20);
-        $idPoste = htmlentities($_POST['idPoste']);
-        $message = htmlentities($_POST['commentaire']);
-
-        if (empty(trim($message))) {
-            die(header("HTTP/1.0 404 Le commentaire est vide"));
-        }
-
-        if (mb_strlen($message) > 250) {
-            die(header("HTTP/1.0 404 Commentaire trop long (pas plus de 250 caracteres)"));
-        }
-
-        $pdo->publierCommentaire($idCommentaire, $idPoste, $message);
-        echo count($pdo->getLesCommentaires($idPoste));
-    break;
-
-    case 'supprimerCommentaire':
-        $idPoste = htmlentities($_POST['idPoste']);
-        $idCommentaire = htmlentities($_POST['idCommentaire']);
-        $pdo->supprimerCommentaire($idCommentaire);
-        echo count($pdo->getLesCommentaires($idPoste));
-    break;
-
-    case 'retirerJaimePoste':
-        $idPoste = htmlentities($_POST['idPoste']);
-        $pdo->retirerJaimePoste($idPoste);
-    break;
-
-
-
-    case 'ajouterAmi':
-        $id = htmlentities($_REQUEST['id']);
-        $pdo->ajouterAmi($sid, $id);
-        $pdo->ajouterAmi($id, $sid);
-        header("Location:../index.php?action=consulterProfil&id=" . $id);
-        exit();
-    break;
-
-    case 'retirerAmi':
-        $id = htmlentities($_REQUEST['id']);
-        $pdo->retirerAmi($sid, $id);
-        $pdo->retirerAmi($id, $sid);
-        header("Location:../index.php?action=consulterProfil&id=" . $id);
-        exit();
-    break;
-
-
-    case 'getLaConversation':
+    /* case 'getLaConversation':
         $idAmi = htmlentities($_GET['idAmi']);
         if (empty($pdo->getUtilisateur($idAmi))) {
             die(header("HTTP/1.0 404 Utilisateur inexistant"));
@@ -95,8 +22,8 @@ switch ($action) {
             $dateInit = htmlentities($conversation['dateEnvoie']);
             $date = date('d-m-Y à H:m', strtotime($dateInit));
 
-            $estAuteur = $sid === $idAmi ? TRUE : FALSE;
-            require $root . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'conversation.php';
+            $estAuteur = $identifiant === $idAmi ? TRUE : FALSE;
+            require ROOT . 'elements' . DIRECTORY_SEPARATOR . 'publication' . DIRECTORY_SEPARATOR . 'conversation.php';
         }
         echo <<<HTML
         <div id="envoie">
@@ -132,9 +59,7 @@ HTML;
             die(header("HTTP/1.0 404 Message trop court"));
         }
         $pdo->envoyerMessage($idAmi, $message);
-    break;
-
-
+    break; */
 
     case 'parametreProfil':
         if (isset($_POST['amis'], $_POST['bio'], $_POST['sujet'], $_POST['commentaire'])) {
@@ -169,7 +94,7 @@ HTML;
                     die(header("HTTP/1.0 404 Les mots de passe ne correspondent pas"));
                 }
             } else {
-                $mdp = $pdo->getUtilisateur($sid)[0]['mdp'];
+                $mdp = $pdo->getUtilisateur($identifiant)[0]['mdp'];
             }
 
             if (strlen($nom) < 2) {
@@ -186,7 +111,24 @@ HTML;
 
             $mdpHash = password_hash($mdp, PASSWORD_DEFAULT, ['cost' => 12]);
 
-            $pdo->updateCompte($avatar, $sid, $mdpHash, $nom, $prenom, ucfirst($ville));
+            $pdo->updateCompte($avatar, $identifiant, $mdpHash, $nom, $prenom, ucfirst($ville));
         }
     break;
+
+    case 'preference':
+        $utilisateur = $pdo->getUtilisateur($identifiant)[0];
+        $id = htmlentities($utilisateur['id']);
+        $avatar = htmlentities($utilisateur['avatar']);
+        $nom = htmlentities($utilisateur['nom']);
+        $prenom = htmlentities($utilisateur['prenom']);
+        $mdp = htmlentities($utilisateur['mdp']);
+        $ville = htmlentities($utilisateur['ville']);
+
+        require_once ROOT . 'public' . DIRECTORY_SEPARATOR . 'preference.php';
+    break;
+
+    /* case 'messagerie':
+        $lesAmis = $pdo->getLesAmis($identifiant);
+        require_once ROOT . 'public' . DIRECTORY_SEPARATOR . 'messagerie.php';
+    break; */
 }

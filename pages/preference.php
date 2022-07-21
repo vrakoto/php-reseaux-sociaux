@@ -22,9 +22,9 @@
                         <th>Visibilité de mes amis</th>
                         <td>
                             <select id="amisParam">
-                                <option value="TOUS" <?php if ($pdo->recupererParametre($sid, "amis") === 'TOUS'): ?>selected<?php endif ?>>Tout le monde</option>
-                                <option value="AMIS" <?php if ($pdo->recupererParametre($sid, "amis") === 'AMIS'): ?>selected<?php endif ?>>Uniquement mes amis</option>
-                                <option value="PRIVEE" <?php if ($pdo->recupererParametre($sid, "amis") === 'PRIVEE'): ?>selected<?php endif ?>>Privé</option>
+                                <option value="TOUS" <?php if ($pdo->recupererParametre($identifiant, "amis") === 'TOUS'): ?>selected<?php endif ?>>Tout le monde</option>
+                                <option value="AMIS" <?php if ($pdo->recupererParametre($identifiant, "amis") === 'AMIS'): ?>selected<?php endif ?>>Uniquement mes amis</option>
+                                <option value="PRIVEE" <?php if ($pdo->recupererParametre($identifiant, "amis") === 'PRIVEE'): ?>selected<?php endif ?>>Privé</option>
                             </select>
                         </td>
                     </tr>
@@ -33,9 +33,9 @@
                         <th>Visibilité de ma biographie</th>
                         <td>
                         <select id="bioParam">
-                            <option value="TOUS" <?php if ($pdo->recupererParametre($sid, "biographie") === 'TOUS'): ?>selected<?php endif ?>>Tout le monde</option>
-                            <option value="AMIS" <?php if ($pdo->recupererParametre($sid, "biographie") === 'AMIS'): ?>selected<?php endif ?>>Uniquement mes amis</option>
-                            <option value="PRIVEE" <?php if ($pdo->recupererParametre($sid, "biographie") === 'PRIVEE'): ?>selected<?php endif ?>>Privé</option>
+                            <option value="TOUS" <?php if ($pdo->recupererParametre($identifiant, "biographie") === 'TOUS'): ?>selected<?php endif ?>>Tout le monde</option>
+                            <option value="AMIS" <?php if ($pdo->recupererParametre($identifiant, "biographie") === 'AMIS'): ?>selected<?php endif ?>>Uniquement mes amis</option>
+                            <option value="PRIVEE" <?php if ($pdo->recupererParametre($identifiant, "biographie") === 'PRIVEE'): ?>selected<?php endif ?>>Privé</option>
                         </select>
                         </td>
                     </tr>
@@ -44,9 +44,9 @@
                         <th>Visibilité de mes sujets</th>
                         <td>
                         <select id="sujetParam">
-                            <option value="TOUS" <?php if ($pdo->recupererParametre($sid, "sujet") === 'TOUS'): ?>selected<?php endif ?>>Tout le monde</option>
-                            <option value="AMIS" <?php if ($pdo->recupererParametre($sid, "sujet") === 'AMIS'): ?>selected<?php endif ?>>Uniquement mes amis</option>
-                            <option value="PRIVEE" <?php if ($pdo->recupererParametre($sid, "sujet") === 'PRIVEE'): ?>selected<?php endif ?>>Privé</option>
+                            <option value="TOUS" <?php if ($pdo->recupererParametre($identifiant, "sujet") === 'TOUS'): ?>selected<?php endif ?>>Tout le monde</option>
+                            <option value="AMIS" <?php if ($pdo->recupererParametre($identifiant, "sujet") === 'AMIS'): ?>selected<?php endif ?>>Uniquement mes amis</option>
+                            <option value="PRIVEE" <?php if ($pdo->recupererParametre($identifiant, "sujet") === 'PRIVEE'): ?>selected<?php endif ?>>Privé</option>
                         </select>
                         </td>
                     </tr>
@@ -55,9 +55,9 @@
                         <th>Visibilité de mes commentaires</th>
                         <td>
                         <select id="comParam">
-                            <option value="TOUS" <?php if ($pdo->recupererParametre($sid, "commentaire") === 'TOUS'): ?>selected<?php endif ?>>Tout le monde</option>
-                            <option value="AMIS" <?php if ($pdo->recupererParametre($sid, "commentaire") === 'AMIS'): ?>selected<?php endif ?>>Uniquement mes amis</option>
-                            <option value="PRIVEE" <?php if ($pdo->recupererParametre($sid, "commentaire") === 'PRIVEE'): ?>selected<?php endif ?>>Privé</option>
+                            <option value="TOUS" <?php if ($pdo->recupererParametre($identifiant, "commentaire") === 'TOUS'): ?>selected<?php endif ?>>Tout le monde</option>
+                            <option value="AMIS" <?php if ($pdo->recupererParametre($identifiant, "commentaire") === 'AMIS'): ?>selected<?php endif ?>>Uniquement mes amis</option>
+                            <option value="PRIVEE" <?php if ($pdo->recupererParametre($identifiant, "commentaire") === 'PRIVEE'): ?>selected<?php endif ?>>Privé</option>
                         </select>
                         </td>
                     </tr>
